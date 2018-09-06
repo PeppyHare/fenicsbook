@@ -25,7 +25,46 @@ Solving such a boundary-value problem in fenics involves:
 Variational Formulation
 ++++++++++++++++++++++++++
 
-We'll need a brief introduction to the variational method here. The basic recipe for turning a PDE into a variational problem is to multiply the PDE by a vunction v, integrate the resulting equation over the domain :math:`\Omega`, and perform integration by parts of terms with second-order derivatives. The function v which multiplies the PDE is called a *test function*. The unknown function *u* to be approximated is referred to as a *trial function*. The terms trial and test functions are used in FEniCS programs too. The trial and test functions belong to certain function spaces that specify the properties of the functions.
+We'll need a brief introduction to the variational method here. The basic recipe for turning a PDE into a variational problem is to multiply the PDE by a vunction v, integrate the resulting equation over the domain :math:`\Omega`, and perform integration by parts of terms with second-order derivatives. The function v which multiplies the PDE is called a *test function*.The unknown function *u* to be approximated is referred to as a *trial function*. The terms trial and test functions are used in FEniCS programs too. The trial and test functions belong to certain function spaces that specify the properties of the functions.
+
+For an example, we do just that for the Poisson equation
+
+.. math::
+    -\int _{\Omega} ( \nabla ^2 u)v \, dx = \int _{\Omega} f v \, dx
+
+What we'd like to do is decrease the order of the derivatives of *u* and *v* as much as possible, so of course we'll be integrating by parts. To make the variational formulation work, we choose a function space such that the test function is required to vanish on the parts of the boundary where the solution *u* is known. This means that we get to drop the boundary terms, and we can pull off derivatives from *u* at the cost of a minus sign:
+
+.. math::
+    \int_{\Omega} \nabla u \cdot \nabla v \, dx = \int_{\Omega} f v \, dx
+
+We can then define our original PDE as the variational problem: find :math:`v \in V` such that
+
+.. math::
+    \int_{\Omega} \nabla u \cdot \nabla v \, dx = \int_{\Omega} f v \, dx \quad \forall v \in \hat{V}
+
+where the trial and test spaces :math:`V` and :math:`\hat{V}` are in the present problem defined as
+
+.. math::
+    V & = & { v \in H^1(\Omega) : v = u_D \text{ on } \partial \Omega } \\
+    \hat{V} & = & { v \in H^1(\Omega) : v = 0 \text{ on } \partial \Omega }
+
+Our finite element solver finds an approximate solution to this problem by replacing the infinite-dimentional function spaces by discrete trial and test spaces. Once we're there, voila! FEniCS can take care of the rest.
+
+Abstract variational formulation
++++++++++++++++++++++++++++++++++++
+
+It's convenient to introduce some notation for variational problems: find :math:`u \in V` such that
+
+.. math::
+    a(u, v) = L(v) \quad \forall v \in \hat{V}
+
+In our example of the Poisson equation, we have:
+
+.. math::
+    a(u, v) & = & \int_{\Omega} \nabla u \cdot \nabla v \, dx \\
+    L(v) & = & \int_\Omega f v \, dx
+
+Here we say :math:`a(u, v)` is a *bilinear form* and :math:`L(v)` is a *linear form*. In each problem we want to solve, we'll identify the terms with the unknown *u* and collect them in :math:`a(u, v)`, and similarly collect all terms with only known functions in :math:`L(v)`.
 '''
 
 from fenics import *
@@ -35,12 +74,24 @@ import matplotlib.pyplot as plt
 
 class PoissonDemo():
     r'''
-    This is a docstring for demo_poisson
 
-    Here we are trying to solve a problem we already know the answer to. The solution we already know to be:
+    Here we are trying to solve a problem we already know the answer to. Solutions that are low-order polynomials are great candidates to check the accuracy of our solution, as standard finite element function spaces of degree *r* will exactly reproduce polynomials of degree *r*. We manufacture some quadratic function in 2D as our exact solution, say
 
     .. math::
-        u_D = 1 + x^2 + 2y^2
+        u_e(x, y) = 1 + x^2 + 2y^2
+
+    By inserting this into the Poisson equation we find that it is a solution if 
+
+    .. math::
+        f(x, y) & = & -6 \\
+        u_D(x, y) & = & u_e(x, y) = 1 + x^2 + 2y^2
+
+    For simplicity, we'll deal with the unit square as our domain
+
+    .. math::
+        \Omega = [0,1] \times [0,1]
+
+    The code in this module shows how to solve this example problem in FEniCS, and since we already know the answer, we also compute the L2 error of our solution. Since we expect our discrete space to exactly reproduce the solution, the error should be within machine precision.
     '''
 
     def __init__(self, n):
