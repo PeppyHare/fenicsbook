@@ -92,6 +92,8 @@ class PoissonDemo():
         \Omega = [0,1] \times [0,1]
 
     The code in this module shows how to solve this example problem in FEniCS, and since we already know the answer, we also compute the L2 error of our solution. Since we expect our discrete space to exactly reproduce the solution, the error should be within machine precision.
+
+    We define our function space by first defining a mesh. We use :code:`UnitSquareMesh` to define a uniform finite element mesho over the unit square, which consists of cells (2D triangles) with straight sides. We then define the function space using :code:`FunctionSpace`. The second argument "P" determines the type of element. Here we use the standard Lagrange family of elements. There are other simplex element families supported and defined in the Periodic Table of the Finite Elements (https://www.femtable.org)
     '''
 
     def __init__(self, n):
