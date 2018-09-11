@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to 2016book’s documentation! &mdash; 2016book  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="2016book  documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> 2016book
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <!-- Local TOC -->
+                <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to 2016book’s documentation!</a><ul>
+<li><a class="reference internal" href="#chapter-2">Chapter 2</a><ul>
+<li><a class="reference internal" href="#finite-element-variational-problems">2.1 Finite Element Variational Problems</a><ul>
+<li><a class="reference internal" href="#variational-formulation">Variational Formulation</a></li>
+<li><a class="reference internal" href="#abstract-variational-formulation">Abstract variational formulation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#poisson2-4">Poisson2_4</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#chapter-3">Chapter 3</a><ul>
+<li><a class="reference internal" href="#id1">Chapter 3</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">2016book</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Welcome to 2016book’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/README.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-2016book-s-documentation">
+<h1>Welcome to 2016book’s documentation!<a class="headerlink" href="#welcome-to-2016book-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This is where I’ll keep notes as I try to work through the <a class="reference external" href="https://www.springer.com/gp/book/9783319524610">2016 version of the FEniCS tutorial</a>. The FEniCS project is a lovely open-source project which aims to provide powerful PDE solvers that don’t necessarily require impossible-to-read syntax in the source code!</p>
+<p>To build these docs, first start up a new fenics project docker instance, with something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">fenicsproject</span>
+<span class="n">fenicsproject</span> <span class="n">create</span> <span class="n">myspace</span>
+<span class="n">fenicsproject</span> <span class="n">start</span> <span class="n">myspace</span>
+</pre></div>
+</div>
+<p>Once inside, the docs are served by running <code class="docutils literal notranslate"><span class="pre">filewatcher.sh</span></code>, which will watch the project directory and re-build if there are any changes. The local port to watch will depend on which port the fenics container is exposed on.</p>
+<div class="section" id="chapter-2">
+<h2>Chapter 2<a class="headerlink" href="#chapter-2" title="Permalink to this headline">¶</a></h2>
+<p>Stuff for chapter 2!</p>
+<div class="section" id="finite-element-variational-problems">
+<h3>2.1 Finite Element Variational Problems<a class="headerlink" href="#finite-element-variational-problems" title="Permalink to this headline">¶</a></h3>
+<p>Introduction to the finite element variational method!</p>
+<p>The “hello world” of the finite element methods for PDEs is the Poisson equation, which consists of the following boundary value problem:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}- \nabla ^2 u(x) = f(x) : \quad x \text{  in  } \Omega \\
+u(x) = u_D(x) : \quad x \text{  on  } \partial \Omega\end{split}\]</div>
+<p>Here u is our unknown function, f = f(x) is a prescribed function, <span class="math notranslate nohighlight">\(\nabla^2\)</span> is the Laplace operator, <span class="math notranslate nohighlight">\(\Omega\)</span> is the spatial domain, and <span class="math notranslate nohighlight">\(\partial \Omega\)</span> is the boundary of <span class="math notranslate nohighlight">\(\Omega\)</span></p>
+<p>Solving such a boundary-value problem in fenics involves:</p>
+<ol class="arabic simple">
+<li>Identify the computational domain, the PDE, its boundary conditions, and source terms (f).</li>
+<li>Reformulate the PDE as a finite element variational problem.</li>
+<li>Write a Python program which defines the computational domain, the variational problem, the boundary conditions, and source terms using the corresponding FEniCS abstractions.</li>
+<li>Call FEniCS to solve the boundary-value problem and, optionally, extend the program to compute derived quantities such as fluxes and averages, and visualize the results.</li>
+</ol>
+<div class="section" id="variational-formulation">
+<h4>Variational Formulation<a class="headerlink" href="#variational-formulation" title="Permalink to this headline">¶</a></h4>
+<p>We’ll need a brief introduction to the variational method here. The basic recipe for turning a PDE into a variational problem is to multiply the PDE by a vunction v, integrate the resulting equation over the domain <span class="math notranslate nohighlight">\(\Omega\)</span>, and perform integration by parts of terms with second-order derivatives. The function v which multiplies the PDE is called a <em>test function</em>.The unknown function <em>u</em> to be approximated is referred to as a <em>trial function</em>. The terms trial and test functions are used in FEniCS programs too. The trial and test functions belong to certain function spaces that specify the properties of the functions.</p>
+<p>For an example, we do just that for the Poisson equation</p>
+<div class="math notranslate nohighlight">
+\[-\int _{\Omega} ( \nabla ^2 u)v \, dx = \int _{\Omega} f v \, dx\]</div>
+<p>What we’d like to do is decrease the order of the derivatives of <em>u</em> and <em>v</em> as much as possible, so of course we’ll be integrating by parts. To make the variational formulation work, we choose a function space such that the test function is required to vanish on the parts of the boundary where the solution <em>u</em> is known. This means that we get to drop the boundary terms, and we can pull off derivatives from <em>u</em> at the cost of a minus sign:</p>
+<div class="math notranslate nohighlight">
+\[\int_{\Omega} \nabla u \cdot \nabla v \, dx = \int_{\Omega} f v \, dx\]</div>
+<p>We can then define our original PDE as the variational problem: find <span class="math notranslate nohighlight">\(v \in V\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[\int_{\Omega} \nabla u \cdot \nabla v \, dx = \int_{\Omega} f v \, dx \quad \forall v \in \hat{V}\]</div>
+<p>where the trial and test spaces <span class="math notranslate nohighlight">\(V\)</span> and <span class="math notranslate nohighlight">\(\hat{V}\)</span> are in the present problem defined as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}V &amp; = &amp; { v \in H^1(\Omega) : v = u_D \text{ on } \partial \Omega } \\
+\hat{V} &amp; = &amp; { v \in H^1(\Omega) : v = 0 \text{ on } \partial \Omega }\end{split}\]</div>
+<p>Our finite element solver finds an approximate solution to this problem by replacing the infinite-dimentional function spaces by discrete trial and test spaces. Once we’re there, voila! FEniCS can take care of the rest.</p>
+</div>
+<div class="section" id="abstract-variational-formulation">
+<h4>Abstract variational formulation<a class="headerlink" href="#abstract-variational-formulation" title="Permalink to this headline">¶</a></h4>
+<p>It’s convenient to introduce some notation for variational problems: find <span class="math notranslate nohighlight">\(u \in V\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[a(u, v) = L(v) \quad \forall v \in \hat{V}\]</div>
+<p>In our example of the Poisson equation, we have:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}a(u, v) &amp; = &amp; \int_{\Omega} \nabla u \cdot \nabla v \, dx \\
+L(v) &amp; = &amp; \int_\Omega f v \, dx\end{split}\]</div>
+<p>Here we say <span class="math notranslate nohighlight">\(a(u, v)\)</span> is a <em>bilinear form</em> and <span class="math notranslate nohighlight">\(L(v)\)</span> is a <em>linear form</em>. In each problem we want to solve, we’ll identify the terms with the unknown <em>u</em> and collect them in <span class="math notranslate nohighlight">\(a(u, v)\)</span>, and similarly collect all terms with only known functions in <span class="math notranslate nohighlight">\(L(v)\)</span>.</p>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">ch2.demo_poisson.</code><code class="descname">PoissonDemo</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span></dt>
+<dd><p>Here we are trying to solve a problem we already know the answer to. Solutions that are low-order polynomials are great candidates to check the accuracy of our solution, as standard finite element function spaces of degree <em>r</em> will exactly reproduce polynomials of degree <em>r</em>. We manufacture some quadratic function in 2D as our exact solution, say</p>
+<div class="math notranslate nohighlight">
+\[u_e(x, y) = 1 + x^2 + 2y^2\]</div>
+<p>By inserting this into the Poisson equation we find that it is a solution if</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}f(x, y) &amp; = &amp; -6 \\
+u_D(x, y) &amp; = &amp; u_e(x, y) = 1 + x^2 + 2y^2\end{split}\]</div>
+<p>For simplicity, we’ll deal with the unit square as our domain</p>
+<div class="math notranslate nohighlight">
+\[\Omega = [0,1] \times [0,1]\]</div>
+<p>The code in this module shows how to solve this example problem in FEniCS, and since we already know the answer, we also compute the L2 error of our solution. Since we expect our discrete space to exactly reproduce the solution, the error should be within machine precision.</p>
+<p>We define our function space by first defining a mesh. We use <code class="code docutils literal notranslate"><span class="pre">UnitSquareMesh</span></code> to define a uniform finite element mesho over the unit square, which consists of cells (2D triangles) with straight sides. We then define the function space using <code class="code docutils literal notranslate"><span class="pre">FunctionSpace</span></code>. The second argument “P” determines the type of element. Here we use the standard Lagrange family of elements. There are other simplex element families supported and defined in the Periodic Table of the Finite Elements (<a class="reference external" href="https://www.femtable.org">https://www.femtable.org</a>)</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="poisson2-4">
+<h3>Poisson2_4<a class="headerlink" href="#poisson2-4" title="Permalink to this headline">¶</a></h3>
+<p>This is a docstring for demo_poisson_2_4</p>
+</div>
+</div>
+<div class="section" id="chapter-3">
+<h2>Chapter 3<a class="headerlink" href="#chapter-3" title="Permalink to this headline">¶</a></h2>
+<p>Stuff for chapter 3!</p>
+<div class="section" id="id1">
+<h3>Chapter 3<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>This is a module docstring</p>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">ch3.heat_equation.</code><code class="descname">HeatEquation</code><span class="sig-paren">(</span><em>num_steps</em>, <em>t</em>, <em>a</em><span class="sig-paren">)</span></dt>
+<dd><p>This is a class docstring in the heat_equation module</p>
+<p>Thermal diffusion of a Gaussian fuction. We’d like to solve for the diffusion of the following gaussian distribution</p>
+<div class="math notranslate nohighlight">
+\[u_0(x, y) = e^{-ax^2 -ay^2}\]</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Evan Bluhm.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
