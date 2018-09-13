@@ -1,14 +1,29 @@
 #!/usr/bin/env python3
-"""
-This is a module docstring
-"""
+r'''
+As our first extension of the Poisson problem, we consider the time-dependent heat equation, or the time-dependent diffusion equation. 
+
+The PDE problem:
+++++++++++++++++++
+
+Our model problem for time-dependent PDEs reads
+
+.. math::
+
+    \frac{\partial u}{\partial t} = \nabla^2u + f & \quad & \text{ in } \Omega \times (0, T] \\
+    u = u_D & \quad & \text{ on } \partial \Omega \times (0, T] \\
+    u = u_0 & \quad & \text{ at } t = 0
+
+Here, :math:`u` varies with space *and* time. The source functiona nd the boundary values may also vary with space and time. The initial condition 
+
+
+'''
 
 from fenics import *
 import numpy as np
 
 
 class HeatEquation(object):
-    """
+    r"""
     This is a class docstring in the heat_equation module
 
     Thermal diffusion of a Gaussian fuction. We'd like to solve for the diffusion of the following gaussian distribution
