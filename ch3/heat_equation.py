@@ -13,7 +13,7 @@ Our model problem for time-dependent PDEs reads
     u = u_D & \quad & \text{ on } \partial \Omega \times (0, T] \\
     u = u_0 & \quad & \text{ at } t = 0
 
-Here, :math:`u` varies with space *and* time. The source functiona nd the boundary values may also vary with space and time. The initial condition 
+Here, :math:`u` varies with space *and* time. The source functiona nd the boundary values may also vary with space and time. The initial condition :math:`u_0` is a function of space only
 
 
 '''
