@@ -94,6 +94,15 @@ class PoissonDemo():
     The code in this module shows how to solve this example problem in FEniCS, and since we already know the answer, we also compute the L2 error of our solution. Since we expect our discrete space to exactly reproduce the solution, the error should be within machine precision.
 
     We define our function space by first defining a mesh. We use :code:`UnitSquareMesh` to define a uniform finite element mesho over the unit square, which consists of cells (2D triangles) with straight sides. We then define the function space using :code:`FunctionSpace`. The second argument "P" determines the type of element. Here we use the standard Lagrange family of elements. There are other simplex element families supported and defined in the Periodic Table of the Finite Elements (https://www.femtable.org)
+
+    **Computing the Error**:
+
+    Since we've chosen a problem we already know the solution to, we can compute the error to check the accuracy of the simulation. We do this by comparing the finite element solution :code:`u` with the exact solution, which in this example happens to be the same as the expression :code:`u_D` used to set the boundary conditions. We compute the error in two different ways. First, we compute the :math:`L^2` norm of the error, defined by 
+
+    .. math::
+        E = \sqrt{ \int_{\Omega} (u_D - u)^2 dx }
+
+    Since the exact solution is quadratic and the finite element solution is piecewise linear, this error will be nonzero. To compute this error in FEniCS just use the :code:`errornorm` function.
     '''
 
     def __init__(self, n):
