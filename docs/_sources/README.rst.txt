@@ -17,38 +17,33 @@ To build these docs, first start up a new fenics project docker instance, with s
 Once inside, the docs are served by running ``filewatcher.sh``, which will watch the project directory and re-build if there are any changes. The local port to watch will depend on which port the fenics container is exposed on.
 
 
-Chapter 2
-------------------
+Chapter 2: Fundamentals
+--------------------------
+
+Here we take a brief peek at the most basic FEniCS capabilities by solving the Poisson equation, the "hello world" of PDEs.
 
 
-.. automodule:: ch2
-    :members:
-    :noindex:
-
-
-2.1 Finite Element Variational Problems
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.1 - 2.3 Finite Element Variational Problems
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: ch2.demo_poisson
     :members:
     :noindex:
 
-Poisson2_4
-~~~~~~~~~~~~~~
+2.4 Deflection of a Membrane
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: ch2.demo_poisson_2_4
     :members:
     :noindex:
 
-Chapter 3
-------------------
+Chapter 3: A Gallery of finite element solvers
+------------------------------------------------
 
-.. automodule:: ch3
-    :members:
-    :noindex:
+The goal of this chapter is to demonstrate how a range of important PDEs from science and engineering can be quickly solved with a few lines of FEniCS code. We start with the heat equation and continue with a nonlinear Poisson equation, the equations for linear elasticity, the Navier–Stokes equations, and finally look at how to solve systems of nonlinear advection–diffusion–reaction equations. These problems illustrate how to solve time-dependent problems, nonlinear problems, vector-valued problems, and systems of PDEs. For each problem, we derive the variational formulation and express the problem in Python in a way that closely resembles the mathematics.
 
-Chapter 3
-~~~~~~~~~~~~~~
+3.1 The Heat Equation
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: ch3.heat_equation
     :members:

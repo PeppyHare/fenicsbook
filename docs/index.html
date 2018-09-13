@@ -81,17 +81,24 @@
                 <!-- Local TOC -->
                 <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">Welcome to 2016book’s documentation!</a><ul>
-<li><a class="reference internal" href="#chapter-2">Chapter 2</a><ul>
-<li><a class="reference internal" href="#finite-element-variational-problems">2.1 Finite Element Variational Problems</a><ul>
+<li><a class="reference internal" href="#chapter-2-fundamentals">Chapter 2: Fundamentals</a><ul>
+<li><a class="reference internal" href="#finite-element-variational-problems">2.1 - 2.3 Finite Element Variational Problems</a><ul>
 <li><a class="reference internal" href="#variational-formulation">Variational Formulation</a></li>
 <li><a class="reference internal" href="#abstract-variational-formulation">Abstract variational formulation</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#poisson2-4">Poisson2_4</a></li>
+<li><a class="reference internal" href="#deflection-of-a-membrane">2.4 Deflection of a Membrane</a><ul>
+<li><a class="reference internal" href="#problem-description">2.4: Problem Description</a></li>
+<li><a class="reference internal" href="#scaling-the-equation">Scaling the Equation</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#chapter-3">Chapter 3</a><ul>
-<li><a class="reference internal" href="#id1">Chapter 3</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#chapter-3-a-gallery-of-finite-element-solvers">Chapter 3: A Gallery of finite element solvers</a><ul>
+<li><a class="reference internal" href="#the-heat-equation">3.1 The Heat Equation</a><ul>
+<li><a class="reference internal" href="#the-pde-problem">The PDE problem:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -150,11 +157,11 @@
 </pre></div>
 </div>
 <p>Once inside, the docs are served by running <code class="docutils literal notranslate"><span class="pre">filewatcher.sh</span></code>, which will watch the project directory and re-build if there are any changes. The local port to watch will depend on which port the fenics container is exposed on.</p>
-<div class="section" id="chapter-2">
-<h2>Chapter 2<a class="headerlink" href="#chapter-2" title="Permalink to this headline">¶</a></h2>
-<p>Stuff for chapter 2!</p>
+<div class="section" id="chapter-2-fundamentals">
+<h2>Chapter 2: Fundamentals<a class="headerlink" href="#chapter-2-fundamentals" title="Permalink to this headline">¶</a></h2>
+<p>Here we take a brief peek at the most basic FEniCS capabilities by solving the Poisson equation, the “hello world” of PDEs.</p>
 <div class="section" id="finite-element-variational-problems">
-<h3>2.1 Finite Element Variational Problems<a class="headerlink" href="#finite-element-variational-problems" title="Permalink to this headline">¶</a></h3>
+<h3>2.1 - 2.3 Finite Element Variational Problems<a class="headerlink" href="#finite-element-variational-problems" title="Permalink to this headline">¶</a></h3>
 <p>Introduction to the finite element variational method!</p>
 <p>The “hello world” of the finite element methods for PDEs is the Poisson equation, which consists of the following boundary value problem:</p>
 <div class="math notranslate nohighlight">
@@ -211,21 +218,85 @@ u_D(x, y) &amp; = &amp; u_e(x, y) = 1 + x^2 + 2y^2\end{split}\]</div>
 \[\Omega = [0,1] \times [0,1]\]</div>
 <p>The code in this module shows how to solve this example problem in FEniCS, and since we already know the answer, we also compute the L2 error of our solution. Since we expect our discrete space to exactly reproduce the solution, the error should be within machine precision.</p>
 <p>We define our function space by first defining a mesh. We use <code class="code docutils literal notranslate"><span class="pre">UnitSquareMesh</span></code> to define a uniform finite element mesho over the unit square, which consists of cells (2D triangles) with straight sides. We then define the function space using <code class="code docutils literal notranslate"><span class="pre">FunctionSpace</span></code>. The second argument “P” determines the type of element. Here we use the standard Lagrange family of elements. There are other simplex element families supported and defined in the Periodic Table of the Finite Elements (<a class="reference external" href="https://www.femtable.org">https://www.femtable.org</a>)</p>
+<p><strong>Computing the Error</strong>:</p>
+<p>Since we’ve chosen a problem we already know the solution to, we can compute the error to check the accuracy of the simulation. We do this by comparing the finite element solution <code class="code docutils literal notranslate"><span class="pre">u</span></code> with the exact solution, which in this example happens to be the same as the expression <code class="code docutils literal notranslate"><span class="pre">u_D</span></code> used to set the boundary conditions. We compute the error in two different ways. First, we compute the <span class="math notranslate nohighlight">\(L^2\)</span> norm of the error, defined by</p>
+<div class="math notranslate nohighlight">
+\[E = \sqrt{ \int_{\Omega} (u_D - u)^2 dx }\]</div>
+<p>Since the exact solution is quadratic and the finite element solution is piecewise linear, this error will be nonzero. To compute this error in FEniCS just use the <code class="code docutils literal notranslate"><span class="pre">errornorm</span></code> function.</p>
 </dd></dl>
 
 </div>
 </div>
-<div class="section" id="poisson2-4">
-<h3>Poisson2_4<a class="headerlink" href="#poisson2-4" title="Permalink to this headline">¶</a></h3>
-<p>This is a docstring for demo_poisson_2_4</p>
+<div class="section" id="deflection-of-a-membrane">
+<h3>2.4 Deflection of a Membrane<a class="headerlink" href="#deflection-of-a-membrane" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="problem-description">
+<h4>2.4: Problem Description<a class="headerlink" href="#problem-description" title="Permalink to this headline">¶</a></h4>
+<p>After kicking the tires with a test problem where we know the answer, we turn to a physically more relevant problem with solutions of a somewhat more exciting shape.</p>
+<p>We want to compute the deflection <span class="math notranslate nohighlight">\(D(x, y)\)</span> of a two-dimensional circular membrane of radius <span class="math notranslate nohighlight">\(R\)</span>, subject to a load <span class="math notranslate nohighlight">\(p\)</span> over the membrane. The appropriate PDE model is</p>
+<div class="math notranslate nohighlight">
+\[-T \nabla ^2 D = p \quad \text{ in } \Omega = \{ (x, y) | x^2 + y^2 \leq R \}\]</div>
+<p>Here <span class="math notranslate nohighlight">\(T\)</span> is the tension in the membrane (constant), <span class="math notranslate nohighlight">\(p\)</span> is the external pressure load. The boundary of the membrane has no deflection, implying <span class="math notranslate nohighlight">\(D=0\)</span> as a boundary condition. We’ll model a localized load as a Gaussian:</p>
+<div class="math notranslate nohighlight">
+\[p(x, y) = \frac{A}{2\pi \sigma} \exp \left( - \frac{1}{2} \left( \frac{x - x_0}{\sigma} \right)^2  - \frac{1}{2} \left( \frac{y -y_0}{\sigma}  \right)^2 \right)\]</div>
+<p>The parameter <span class="math notranslate nohighlight">\(A\)</span> is the amplitude of the pressure, <span class="math notranslate nohighlight">\((x_0, y_0)\)</span> the localization of the maximum point of the load, and <span class="math notranslate nohighlight">\(\sigma\)</span> the “width” of the load. We will take the center of the pressure to <span class="math notranslate nohighlight">\((0, R_0)\)</span> for some <span class="math notranslate nohighlight">\(0 &lt; R_0 &lt; R\)</span></p>
+</div>
+<div class="section" id="scaling-the-equation">
+<h4>Scaling the Equation<a class="headerlink" href="#scaling-the-equation" title="Permalink to this headline">¶</a></h4>
+<p>We have a lot of physics parameters in the problem, and as with any such problem we can improve our numerical precision by grouping them by means of scaling. We introduce dimensionless coordinates <span class="math notranslate nohighlight">\(\bar{x} = x / R, \, \bar{y} = y / R\)</span> and a dimensionless deflection <span class="math notranslate nohighlight">\(w = D / D_c\)</span> where <span class="math notranslate nohighlight">\(D_C\)</span> is a characteristic size of the deflection. Introducing <span class="math notranslate nohighlight">\(\bar{R_0} = R_0 / R\)</span> we obtain</p>
+<div class="math notranslate nohighlight">
+\[- \frac{\partial ^2 w }{\partial \bar{x} ^2} - \frac{\partial ^2 w }{\partial \bar{y} ^2} = \alpha \exp \left( - \beta ^2 (\bar{x}^2 + (\bar{y} - R_0)^2 )  \right) \quad \text{ for } \bar{x}^2 + \bar{y}^2 &lt; 1\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\alpha = \frac{R^2A}{2 \pi T D_c \sigma}, \quad \beta = \frac{R}{\sqrt{2} \sigma}\]</div>
+<p>With the appropriate scaling, <span class="math notranslate nohighlight">\(w\)</span> and its derivatives are of size unity, so the LHS of the scaled PDE is about unity in size, while the right hand side has <span class="math notranslate nohighlight">\(\alpha\)</span> as its characteristic size. This suggests choosing <span class="math notranslate nohighlight">\(\alpha\)</span> to be unity, or around unity. We shall in this particular case choose <span class="math notranslate nohighlight">\(\alpha = 4\)</span> (One can also find the analytical solution in scaled coordinates and show that the maximum deflection <span class="math notranslate nohighlight">\(D(0, 0)\)</span> is <span class="math notranslate nohighlight">\(D_c\)</span> if we choose <span class="math notranslate nohighlight">\(\alpha = 4\)</span> to determine <span class="math notranslate nohighlight">\(D_c\)</span>). With <span class="math notranslate nohighlight">\(D_c = A R^2  / (8 \pi \sigma T)\)</span> and dropping the bars for convenience we obtain the scaled problem</p>
+<div class="math notranslate nohighlight">
+\[- \nabla ^2 w = 4 \exp \left( - \beta^2(x^2+(y-R_0)^2) \right)\]</div>
+<p>to be solved over the unit disc with <span class="math notranslate nohighlight">\(w = 0\)</span> on the boundary. Now there are only two parameters to vary: the dimensionless extent of the pressure <span class="math notranslate nohighlight">\(\beta\)</span> and the localization of the pressure peak <span class="math notranslate nohighlight">\(R_0 \in [0, 1]\)</span>. As <span class="math notranslate nohighlight">\(\beta \rightarrow 0\)</span>, the solution will approach the special case <span class="math notranslate nohighlight">\(w = 1 - x^2 - y^2\)</span></p>
+<p>Given a computed scaled solution <span class="math notranslate nohighlight">\(w\)</span> the physical deflection can be computed by</p>
+<div class="math notranslate nohighlight">
+\[D = \frac{AR^2}{8 \pi \sigma T} w\]</div>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">ch2.demo_poisson_2_4.</code><code class="descname">PoissonDemo24</code><span class="sig-paren">(</span><em>n</em>, <em>beta=8</em>, <em>R0=0.6</em><span class="sig-paren">)</span></dt>
+<dd><p>Solving this problem is very similar to the previous test problem, with just a few modifications.</p>
+<p><strong>Defining a unit disk mesh:</strong></p>
+<p>A mesh over the unit disk can be created by the <code class="code docutils literal notranslate"><span class="pre">mshr</span></code> tool in FEniCS. The <code class="code docutils literal notranslate"><span class="pre">Circle</span></code> shape from <code class="code docutils literal notranslate"><span class="pre">mshr</span></code> takes the center and radius of the circle as arguments. The second argument to <code class="code docutils literal notranslate"><span class="pre">generate_mesh</span></code> specifies the desired mesh resolution. The cell size will be (approximately) equal to the diameter of the domain divided by the resolution.</p>
+<p><strong>Defining the load:</strong></p>
+<p>We use an <code class="code docutils literal notranslate"><span class="pre">Expression</span></code> object to represent the pressure function in our PDE. We set the physical parameters <span class="math notranslate nohighlight">\(\beta\)</span> and <span class="math notranslate nohighlight">\(R_0\)</span> by keyword arguments. The coordinates in Expression objects are always an array <code class="code docutils literal notranslate"><span class="pre">x</span></code> with components <code class="code docutils literal notranslate"><span class="pre">x[0],</span> <span class="pre">x[1],</span> <span class="pre">x[2]</span></code> corresponding with <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, and <span class="math notranslate nohighlight">\(z\)</span>. Otherwise we are free to introduce names of parameters as long as these are given default values by keyword arguments. All the parameters initialized by keyword arguments can at any time have their values modified.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">p</span><span class="o">.</span><span class="n">R0</span> <span class="o">=</span> <span class="mf">0.3</span>
+</pre></div>
+</div>
+<p><strong>Defining the variational problem:</strong></p>
+<p>The variational problem and boundary conditions are the same as in our first Poisson problem, but we introduce <code class="code docutils literal notranslate"><span class="pre">w</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">u</span></code> as primary unknown and <code class="code docutils literal notranslate"><span class="pre">p</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">f</span></code> as right-hand side function to better align with our problem description.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">TrialFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">TestFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">v</span> <span class="o">*</span> <span class="n">dx</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<span class="n">solve</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">L</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bc</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 </div>
-<div class="section" id="chapter-3">
-<h2>Chapter 3<a class="headerlink" href="#chapter-3" title="Permalink to this headline">¶</a></h2>
-<p>Stuff for chapter 3!</p>
-<div class="section" id="id1">
-<h3>Chapter 3<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>This is a module docstring</p>
+</div>
+<div class="section" id="chapter-3-a-gallery-of-finite-element-solvers">
+<h2>Chapter 3: A Gallery of finite element solvers<a class="headerlink" href="#chapter-3-a-gallery-of-finite-element-solvers" title="Permalink to this headline">¶</a></h2>
+<p>The goal of this chapter is to demonstrate how a range of important PDEs from science and engineering can be quickly solved with a few lines of FEniCS code. We start with the heat equation and continue with a nonlinear Poisson equation, the equations for linear elasticity, the Navier–Stokes equations, and finally look at how to solve systems of nonlinear advection–diffusion–reaction equations. These problems illustrate how to solve time-dependent problems, nonlinear problems, vector-valued problems, and systems of PDEs. For each problem, we derive the variational formulation and express the problem in Python in a way that closely resembles the mathematics.</p>
+<div class="section" id="the-heat-equation">
+<h3>3.1 The Heat Equation<a class="headerlink" href="#the-heat-equation" title="Permalink to this headline">¶</a></h3>
+<p>As our first extension of the Poisson problem, we consider the time-dependent heat equation, or the time-dependent diffusion equation.</p>
+<div class="section" id="the-pde-problem">
+<h4>The PDE problem:<a class="headerlink" href="#the-pde-problem" title="Permalink to this headline">¶</a></h4>
+<p>Our model problem for time-dependent PDEs reads</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{\partial u}{\partial t} = \nabla^2u + f &amp; \quad &amp; \text{ in } \Omega \times (0, T] \\
+u = u_D &amp; \quad &amp; \text{ on } \partial \Omega \times (0, T] \\
+u = u_0 &amp; \quad &amp; \text{ at } t = 0\end{split}\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(u\)</span> varies with space <em>and</em> time. The source functiona nd the boundary values may also vary with space and time. The initial condition</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">ch3.heat_equation.</code><code class="descname">HeatEquation</code><span class="sig-paren">(</span><em>num_steps</em>, <em>t</em>, <em>a</em><span class="sig-paren">)</span></dt>
@@ -235,6 +306,7 @@ u_D(x, y) &amp; = &amp; u_e(x, y) = 1 + x^2 + 2y^2\end{split}\]</div>
 \[u_0(x, y) = e^{-ax^2 -ay^2}\]</div>
 </dd></dl>
 
+</div>
 </div>
 </div>
 </div>
