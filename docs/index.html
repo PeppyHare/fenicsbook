@@ -88,7 +88,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#deflection-of-a-membrane">2.4 Deflection of a Membrane</a><ul>
-<li><a class="reference internal" href="#problem-description">2.4: Problem Description</a></li>
+<li><a class="reference internal" href="#problem-description">Problem Description</a></li>
 <li><a class="reference internal" href="#scaling-the-equation">Scaling the Equation</a></li>
 </ul>
 </li>
@@ -97,6 +97,7 @@
 <li><a class="reference internal" href="#chapter-3-a-gallery-of-finite-element-solvers">Chapter 3: A Gallery of finite element solvers</a><ul>
 <li><a class="reference internal" href="#the-heat-equation">3.1 The Heat Equation</a><ul>
 <li><a class="reference internal" href="#the-pde-problem">The PDE problem:</a></li>
+<li><a class="reference internal" href="#id1">Variational Formulation</a></li>
 </ul>
 </li>
 </ul>
@@ -230,7 +231,7 @@ u_D(x, y) &amp; = &amp; u_e(x, y) = 1 + x^2 + 2y^2\end{split}\]</div>
 <div class="section" id="deflection-of-a-membrane">
 <h3>2.4 Deflection of a Membrane<a class="headerlink" href="#deflection-of-a-membrane" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="problem-description">
-<h4>2.4: Problem Description<a class="headerlink" href="#problem-description" title="Permalink to this headline">¶</a></h4>
+<h4>Problem Description<a class="headerlink" href="#problem-description" title="Permalink to this headline">¶</a></h4>
 <p>After kicking the tires with a test problem where we know the answer, we turn to a physically more relevant problem with solutions of a somewhat more exciting shape.</p>
 <p>We want to compute the deflection <span class="math notranslate nohighlight">\(D(x, y)\)</span> of a two-dimensional circular membrane of radius <span class="math notranslate nohighlight">\(R\)</span>, subject to a load <span class="math notranslate nohighlight">\(p\)</span> over the membrane. The appropriate PDE model is</p>
 <div class="math notranslate nohighlight">
@@ -296,14 +297,61 @@ u_D(x, y) &amp; = &amp; u_e(x, y) = 1 + x^2 + 2y^2\end{split}\]</div>
 \[\begin{split}\frac{\partial u}{\partial t} = \nabla^2u + f &amp; \quad &amp; \text{ in } \Omega \times (0, T] \\
 u = u_D &amp; \quad &amp; \text{ on } \partial \Omega \times (0, T] \\
 u = u_0 &amp; \quad &amp; \text{ at } t = 0\end{split}\]</div>
-<p>Here, <span class="math notranslate nohighlight">\(u\)</span> varies with space <em>and</em> time. The source functiona nd the boundary values may also vary with space and time. The initial condition <span class="math notranslate nohighlight">\(u_0\)</span> is a function of space only</p>
+<p>Here, <span class="math notranslate nohighlight">\(u\)</span> varies with space <em>and</em> time. The source functiona nd the boundary values may also vary with space and time. The initial condition <span class="math notranslate nohighlight">\(u_0\)</span> is a function of space only.</p>
+</div>
+<div class="section" id="id1">
+<h4>Variational Formulation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>A straightforward approach to solving time-dependent PDEs by the finite element method is to first discretize the time derivative by a finite difference approximation, which yields a sequence of stationary problems, and then in turn each stationary problem into a variational formulation.</p>
+<p>Let superscript <span class="math notranslate nohighlight">\(n\)</span> denote a quantity at time <span class="math notranslate nohighlight">\(t_n\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is an integer counting time levels. For example, <span class="math notranslate nohighlight">\(u^n\)</span> means <span class="math notranslate nohighlight">\(u\)</span> at time level <span class="math notranslate nohighlight">\(n\)</span>. A finite difference discretization in time first consists of samling the PDE at some level, say <span class="math notranslate nohighlight">\(t_{n+1}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\left( \frac{\partial u}{\partial t}  \right)^{n + 1} = \nabla ^2 u^{n + 1} + f ^{n+1}\]</div>
+<p>The time-derivative can be approximated by a difference quotient. For simplicity and stability reasons, we choose a simple backward difference:</p>
+<div class="math notranslate nohighlight">
+\[\left( \frac{\partial u}{\partial t} \right)^{n+1} \approx \frac{u^{n+1} - u^n}{\Delta t}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Delta t\)</span> is the time discretization parameter. Combining these two expressions we get</p>
+<div class="math notranslate nohighlight">
+\[\frac{u^{n+1} - u^n}{\Delta t}  = \nabla ^2 u^{n+1} + f^{n+1}\]</div>
+<p>This is our time-discrete version of the heat equation, a so-called backward Euler or “implicit Euler” discretization.</p>
+<p>We may reorder so that the LHS contains the terms with the unknown <span class="math notranslate nohighlight">\(u^{n+1}\)</span> and the RHS contains computed terms only. The result is a sequence of spatial (stationary) problems for <span class="math notranslate nohighlight">\(u^{n+1}\)</span>, assuming <span class="math notranslate nohighlight">\(u^{n}\)</span> is known from the previous time step:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}u^{0}  &amp; = &amp; u_0 \\
+u^{n+1} - \Delta t \nabla ^2 u^{n+1} &amp; = &amp; u^n + \Delta t f^{n+1}, \quad n = 0, 1, 2\end{split}\]</div>
+<p>Given <span class="math notranslate nohighlight">\(u_0\)</span> we can solve for <span class="math notranslate nohighlight">\(u^0\)</span>, <span class="math notranslate nohighlight">\(u^1\)</span>, <span class="math notranslate nohighlight">\(u^2\)</span>, and so on.</p>
+<p>An alternative which can be convenient in implementations is to collect all terms on one side of the equality sign:</p>
+<div class="math notranslate nohighlight">
+\[u^{n+1} - \Delta t \nabla ^2 u^{n+1} -  u^n - \Delta t f^{n+1}= 0, \quad n = 0, 1, 2\]</div>
+<p>We use a finite element method to solve <span class="math notranslate nohighlight">\(u^{0} = u_0\)</span> and either of the above expressions. This requires turning the equations into weak forms. As usual we multiply by a test function <span class="math notranslate nohighlight">\(v \in \hat{V}\)</span> and integrate second-derivatives by parts. Introducing the symbol <span class="math notranslate nohighlight">\(u\)</span> for <span class="math notranslate nohighlight">\(u^{n+1}\)</span> (which is natural in code), the resulting weak form can be conveniently written in the standard notation:</p>
+<div class="math notranslate nohighlight">
+\[a(u, v) = L_{n+1}(v),\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}a(u, v) = \int_{\Omega} (uv + \Delta t \nabla u \cdot \nabla v) dx, \\
+L_{n+1} (v) = \int_{\Omega} (u^n + \Delta t f^{n+1}) v\, dx\end{split}\]</div>
+<p>In addition to the variational problem to be solved in each time step, we also need to approximate the initial condition. This equation can also be turned into a variational problem:</p>
+<div class="math notranslate nohighlight">
+\[a_0(u, v) = L_0(v),\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}a_0(u, v) &amp; = &amp; \int_{\Omega} uv \, dx \\
+L_0(v) &amp; = &amp; \int_\Omega u_0 v \, dx\end{split}\]</div>
+<p>When solving this variational problem, <span class="math notranslate nohighlight">\(u^0\)</span> becomes the <span class="math notranslate nohighlight">\(L^2\)</span> projection of the initial value <span class="math notranslate nohighlight">\(u_0\)</span> into the finite element space. The alternative is to construct <span class="math notranslate nohighlight">\(u^0\)</span> by just interpolating the initial value <span class="math notranslate nohighlight">\(u_0\)</span>; that is, if <span class="math notranslate nohighlight">\(u^0 = \sum ^N _{j = 1} U{_j}{^0}\phi_j\)</span> we simply set <span class="math notranslate nohighlight">\(U_j = u_0(x_j, y_j)\)</span> where <span class="math notranslate nohighlight">\((x_j, y_j)\)</span> are the coordinates of node number <span class="math notranslate nohighlight">\(j\)</span>. We refer to these two strategies as computing the initial condition by either “projection” or “interpolation”. Both operations are easy to compute in FEniCS through a single statement, using either <code class="code docutils literal notranslate"><span class="pre">project</span></code> or <code class="code docutils literal notranslate"><span class="pre">interpolate</span></code> function. The most common choice is <code class="code docutils literal notranslate"><span class="pre">project</span></code> which computes an approximation to <span class="math notranslate nohighlight">\(u_0\)</span>, but in some applications where we want to verify the code by reproducing exact solutions, one must use <code class="code docutils literal notranslate"><span class="pre">interpolate</span></code> (and we use such a test problem here!)</p>
+<p>In summary, we thus need to solve the following sequence of variational problems to compute the finite element solution to the heat equation: find <span class="math notranslate nohighlight">\(u^0 \in V\)</span> such that <span class="math notranslate nohighlight">\(a_0(u^0, v) = L_0(v)\)</span> holds for all <span class="math notranslate nohighlight">\(v \in \hat{V}\)</span>, and then find <span class="math notranslate nohighlight">\(u^{n+1} \in V\)</span> such that <span class="math notranslate nohighlight">\(a(u^{n+1}, v) = L_{n+1} (v)\)</span> for all <span class="math notranslate nohighlight">\(v \in \hat{V}\)</span>, or alternatively, <span class="math notranslate nohighlight">\(F_{n+1}(u^{n+1}, v) = 0\)</span> for all <span class="math notranslate nohighlight">\(v \in \hat{V}\)</span>, for <span class="math notranslate nohighlight">\(n = 0, 1, 2, \ldots\)</span></p>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">ch3.heat_equation.</code><code class="descname">HeatEquation</code><span class="sig-paren">(</span><em>num_steps</em>, <em>t</em>, <em>a</em><span class="sig-paren">)</span></dt>
+<em class="property">class </em><code class="descclassname">ch3.heat_equation.</code><code class="descname">HeatEquation</code><span class="sig-paren">(</span><em>n_s=300</em>, <em>T=2.0</em>, <em>a=5</em>, <em>steps=40</em><span class="sig-paren">)</span></dt>
 <dd><p>This is a class docstring in the heat_equation module</p>
 <p>Thermal diffusion of a Gaussian fuction. We’d like to solve for the diffusion of the following gaussian distribution</p>
 <div class="math notranslate nohighlight">
 \[u_0(x, y) = e^{-ax^2 -ay^2}\]</div>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">ch3.heat_equation.</code><code class="descname">TestProblem</code></dt>
+<dd><p>Just as for the Poisson problem from the previous chapter, we construct a test problem that makes it easy to determine if the calculations are correct. Since we know that our first-order time-stepping scheme is exact for linear functions, we create a test problem which has linear variation in time. We combine this with a quadratic variation in space:</p>
+<div class="math notranslate nohighlight">
+\[u = 1 + x^2 + \alpha y^2 + \beta t\]</div>
+<p>which yields a function whose computed values at the nodes will be exact, regardless of the size of the elements and <span class="math notranslate nohighlight">\(\Delta t\)</span>, as long as the mesh is uniformly partitioned. By inserting ^ into the heat equation, we find that the RHS <span class="math notranslate nohighlight">\(f\)</span> must be given by <span class="math notranslate nohighlight">\(f(x, y, t) = \Beta - 2 - 2 \alpha\)</span>. The boundary value is <span class="math notranslate nohighlight">\(u_D(x, y, t) = 1 + x^2 + \alpha y^2 + \beta t\)</span> and the initial value is <span class="math notranslate nohighlight">\(u_0(x, y) = 1 + x^2 + \alpha y^2\)</span>.</p>
 </dd></dl>
 
 </div>

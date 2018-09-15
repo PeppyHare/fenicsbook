@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 r'''
 
-2.4: Problem Description
+Problem Description
 +++++++++++++++++++++++++++++++
 
 After kicking the tires with a test problem where we know the answer, we turn to a physically more relevant problem with solutions of a somewhat more exciting shape.
