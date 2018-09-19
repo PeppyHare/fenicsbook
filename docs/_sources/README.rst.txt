@@ -48,3 +48,10 @@ The goal of this chapter is to demonstrate how a range of important PDEs from sc
 .. automodule:: ch3.heat_equation
     :members:
     :noindex:
+
+3.2: A Nonlinear Poisson Equation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: ch3.nonlinear_pdes
+    :members:
+    :noindex:

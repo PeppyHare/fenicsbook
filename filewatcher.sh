@@ -13,4 +13,4 @@ cd "$DIR" || exit 1
 # /usr/bin/ag -l | /usr/bin/entr -d bash "$DIR/buildDocs.sh"
 
 pip3 install --user sphinx-autobuild
-sphinx-autobuild -p 8888 -H "0.0.0.0" -i ".git/*" -i "docs/*" "$DIR" "$DIR/docs"
+sphinx-autobuild -p 30001 -H "0.0.0.0" -i ".git/*" -i "docs/*" "$DIR" "$DIR/docs"
