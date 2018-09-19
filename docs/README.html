@@ -75,35 +75,11 @@
           
             
             
-                <!-- Local TOC -->
-                <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Welcome to 2016book&#8217;s documentation!</a><ul>
-<li><a class="reference internal" href="#chapter-2-fundamentals">Chapter 2: Fundamentals</a><ul>
-<li><a class="reference internal" href="#finite-element-variational-problems">2.1 - 2.3 Finite Element Variational Problems</a><ul>
-<li><a class="reference internal" href="#variational-formulation">Variational Formulation</a></li>
-<li><a class="reference internal" href="#abstract-variational-formulation">Abstract variational formulation</a></li>
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="ch2.html">Chapter 2: Fundamentals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ch3.html">Chapter 3: A Gallery of finite element solvers</a></li>
 </ul>
-</li>
-<li><a class="reference internal" href="#deflection-of-a-membrane">2.4 Deflection of a Membrane</a><ul>
-<li><a class="reference internal" href="#problem-description">Problem Description</a></li>
-<li><a class="reference internal" href="#scaling-the-equation">Scaling the Equation</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#chapter-3-a-gallery-of-finite-element-solvers">Chapter 3: A Gallery of finite element solvers</a><ul>
-<li><a class="reference internal" href="#the-heat-equation">3.1 The Heat Equation</a><ul>
-<li><a class="reference internal" href="#the-pde-problem">The PDE problem:</a></li>
-<li><a class="reference internal" href="#id1">Variational Formulation</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#a-nonlinear-poisson-equation">3.2: A Nonlinear Poisson Equation</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
+
             
           
         </div>
@@ -156,261 +132,20 @@ fenicsproject start myspace
 </pre></div>
 </div>
 <p>Once inside, the docs are served by running <code class="docutils literal"><span class="pre">filewatcher.sh</span></code>, which will watch the project directory and re-build if there are any changes. The local port to watch will depend on which port the fenics container is exposed on.</p>
-<div class="section" id="chapter-2-fundamentals">
-<h2>Chapter 2: Fundamentals<a class="headerlink" href="#chapter-2-fundamentals" title="Permalink to this headline">¶</a></h2>
-<p>Here we take a brief peek at the most basic FEniCS capabilities by solving the Poisson equation, the &#8220;hello world&#8221; of PDEs.</p>
-<div class="section" id="finite-element-variational-problems">
-<h3>2.1 - 2.3 Finite Element Variational Problems<a class="headerlink" href="#finite-element-variational-problems" title="Permalink to this headline">¶</a></h3>
-<p>Introduction to the finite element variational method!</p>
-<p>The &#8220;hello world&#8221; of the finite element methods for PDEs is the Poisson equation, which consists of the following boundary value problem:</p>
-<div class="math">
-\[\begin{split}- \nabla ^2 u(x) = f(x) : \quad x \text{  in  } \Omega \\
-u(x) = u_D(x) : \quad x \text{  on  } \partial \Omega\end{split}\]</div>
-<p>Here u is our unknown function, f = f(x) is a prescribed function, <span class="math">\(\nabla^2\)</span> is the Laplace operator, <span class="math">\(\Omega\)</span> is the spatial domain, and <span class="math">\(\partial \Omega\)</span> is the boundary of <span class="math">\(\Omega\)</span></p>
-<p>Solving such a boundary-value problem in fenics involves:</p>
-<ol class="arabic simple">
-<li>Identify the computational domain, the PDE, its boundary conditions, and source terms (f).</li>
-<li>Reformulate the PDE as a finite element variational problem.</li>
-<li>Write a Python program which defines the computational domain, the variational problem, the boundary conditions, and source terms using the corresponding FEniCS abstractions.</li>
-<li>Call FEniCS to solve the boundary-value problem and, optionally, extend the program to compute derived quantities such as fluxes and averages, and visualize the results.</li>
-</ol>
-<div class="section" id="variational-formulation">
-<h4>Variational Formulation<a class="headerlink" href="#variational-formulation" title="Permalink to this headline">¶</a></h4>
-<p>We&#8217;ll need a brief introduction to the variational method here. The basic recipe for turning a PDE into a variational problem is to multiply the PDE by a vunction v, integrate the resulting equation over the domain <span class="math">\(\Omega\)</span>, and perform integration by parts of terms with second-order derivatives. The function v which multiplies the PDE is called a <em>test function</em>.The unknown function <em>u</em> to be approximated is referred to as a <em>trial function</em>. The terms trial and test functions are used in FEniCS programs too. The trial and test functions belong to certain function spaces that specify the properties of the functions.</p>
-<p>For an example, we do just that for the Poisson equation</p>
-<div class="math">
-\[-\int _{\Omega} ( \nabla ^2 u)v \, dx = \int _{\Omega} f v \, dx\]</div>
-<p>What we&#8217;d like to do is decrease the order of the derivatives of <em>u</em> and <em>v</em> as much as possible, so of course we&#8217;ll be integrating by parts. To make the variational formulation work, we choose a function space such that the test function is required to vanish on the parts of the boundary where the solution <em>u</em> is known. This means that we get to drop the boundary terms, and we can pull off derivatives from <em>u</em> at the cost of a minus sign:</p>
-<div class="math">
-\[\int_{\Omega} \nabla u \cdot \nabla v \, dx = \int_{\Omega} f v \, dx\]</div>
-<p>We can then define our original PDE as the variational problem: find <span class="math">\(v \in V\)</span> such that</p>
-<div class="math">
-\[\int_{\Omega} \nabla u \cdot \nabla v \, dx = \int_{\Omega} f v \, dx \quad \forall v \in \hat{V}\]</div>
-<p>where the trial and test spaces <span class="math">\(V\)</span> and <span class="math">\(\hat{V}\)</span> are in the present problem defined as</p>
-<div class="math">
-\[\begin{split}V &amp; = &amp; { v \in H^1(\Omega) : v = u_D \text{ on } \partial \Omega } \\
-\hat{V} &amp; = &amp; { v \in H^1(\Omega) : v = 0 \text{ on } \partial \Omega }\end{split}\]</div>
-<p>Our finite element solver finds an approximate solution to this problem by replacing the infinite-dimentional function spaces by discrete trial and test spaces. Once we&#8217;re there, voila! FEniCS can take care of the rest.</p>
-</div>
-<div class="section" id="abstract-variational-formulation">
-<h4>Abstract variational formulation<a class="headerlink" href="#abstract-variational-formulation" title="Permalink to this headline">¶</a></h4>
-<p>It&#8217;s convenient to introduce some notation for variational problems: find <span class="math">\(u \in V\)</span> such that</p>
-<div class="math">
-\[a(u, v) = L(v) \quad \forall v \in \hat{V}\]</div>
-<p>In our example of the Poisson equation, we have:</p>
-<div class="math">
-\[\begin{split}a(u, v) &amp; = &amp; \int_{\Omega} \nabla u \cdot \nabla v \, dx \\
-L(v) &amp; = &amp; \int_\Omega f v \, dx\end{split}\]</div>
-<p>Here we say <span class="math">\(a(u, v)\)</span> is a <em>bilinear form</em> and <span class="math">\(L(v)\)</span> is a <em>linear form</em>. In each problem we want to solve, we&#8217;ll identify the terms with the unknown <em>u</em> and collect them in <span class="math">\(a(u, v)\)</span>, and similarly collect all terms with only known functions in <span class="math">\(L(v)\)</span>.</p>
-<dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">ch2.demo_poisson.</code><code class="descname">PoissonDemo</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span></dt>
-<dd><p>Here we are trying to solve a problem we already know the answer to. Solutions that are low-order polynomials are great candidates to check the accuracy of our solution, as standard finite element function spaces of degree <em>r</em> will exactly reproduce polynomials of degree <em>r</em>. We manufacture some quadratic function in 2D as our exact solution, say</p>
-<div class="math">
-\[u_e(x, y) = 1 + x^2 + 2y^2\]</div>
-<p>By inserting this into the Poisson equation we find that it is a solution if</p>
-<div class="math">
-\[\begin{split}f(x, y) &amp; = &amp; -6 \\
-u_D(x, y) &amp; = &amp; u_e(x, y) = 1 + x^2 + 2y^2\end{split}\]</div>
-<p>For simplicity, we&#8217;ll deal with the unit square as our domain</p>
-<div class="math">
-\[\Omega = [0,1] \times [0,1]\]</div>
-<p>The code in this module shows how to solve this example problem in FEniCS, and since we already know the answer, we also compute the L2 error of our solution. Since we expect our discrete space to exactly reproduce the solution, the error should be within machine precision.</p>
-<p>We define our function space by first defining a mesh. We use <code class="code docutils literal"><span class="pre">UnitSquareMesh</span></code> to define a uniform finite element mesho over the unit square, which consists of cells (2D triangles) with straight sides. We then define the function space using <code class="code docutils literal"><span class="pre">FunctionSpace</span></code>. The second argument &#8220;P&#8221; determines the type of element. Here we use the standard Lagrange family of elements. There are other simplex element families supported and defined in the Periodic Table of the Finite Elements (<a class="reference external" href="https://www.femtable.org">https://www.femtable.org</a>)</p>
-<p><strong>Computing the Error</strong>:</p>
-<p>Since we&#8217;ve chosen a problem we already know the solution to, we can compute the error to check the accuracy of the simulation. We do this by comparing the finite element solution <code class="code docutils literal"><span class="pre">u</span></code> with the exact solution, which in this example happens to be the same as the expression <code class="code docutils literal"><span class="pre">u_D</span></code> used to set the boundary conditions. We compute the error in two different ways. First, we compute the <span class="math">\(L^2\)</span> norm of the error, defined by</p>
-<div class="math">
-\[E = \sqrt{ \int_{\Omega} (u_D - u)^2 dx }\]</div>
-<p>Since the exact solution is quadratic and the finite element solution is piecewise linear, this error will be nonzero. To compute this error in FEniCS just use the <code class="code docutils literal"><span class="pre">errornorm</span></code> function.</p>
-</dd></dl>
-
-</div>
-</div>
-<div class="section" id="deflection-of-a-membrane">
-<h3>2.4 Deflection of a Membrane<a class="headerlink" href="#deflection-of-a-membrane" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="problem-description">
-<h4>Problem Description<a class="headerlink" href="#problem-description" title="Permalink to this headline">¶</a></h4>
-<p>After kicking the tires with a test problem where we know the answer, we turn to a physically more relevant problem with solutions of a somewhat more exciting shape.</p>
-<p>We want to compute the deflection <span class="math">\(D(x, y)\)</span> of a two-dimensional circular membrane of radius <span class="math">\(R\)</span>, subject to a load <span class="math">\(p\)</span> over the membrane. The appropriate PDE model is</p>
-<div class="math">
-\[-T \nabla ^2 D = p \quad \text{ in } \Omega = \{ (x, y) | x^2 + y^2 \leq R \}\]</div>
-<p>Here <span class="math">\(T\)</span> is the tension in the membrane (constant), <span class="math">\(p\)</span> is the external pressure load. The boundary of the membrane has no deflection, implying <span class="math">\(D=0\)</span> as a boundary condition. We&#8217;ll model a localized load as a Gaussian:</p>
-<div class="math">
-\[p(x, y) = \frac{A}{2\pi \sigma} \exp \left( - \frac{1}{2} \left( \frac{x - x_0}{\sigma} \right)^2  - \frac{1}{2} \left( \frac{y -y_0}{\sigma}  \right)^2 \right)\]</div>
-<p>The parameter <span class="math">\(A\)</span> is the amplitude of the pressure, <span class="math">\((x_0, y_0)\)</span> the localization of the maximum point of the load, and <span class="math">\(\sigma\)</span> the &#8220;width&#8221; of the load. We will take the center of the pressure to <span class="math">\((0, R_0)\)</span> for some <span class="math">\(0 &lt; R_0 &lt; R\)</span></p>
-</div>
-<div class="section" id="scaling-the-equation">
-<h4>Scaling the Equation<a class="headerlink" href="#scaling-the-equation" title="Permalink to this headline">¶</a></h4>
-<p>We have a lot of physics parameters in the problem, and as with any such problem we can improve our numerical precision by grouping them by means of scaling. We introduce dimensionless coordinates <span class="math">\(\bar{x} = x / R, \, \bar{y} = y / R\)</span> and a dimensionless deflection <span class="math">\(w = D / D_c\)</span> where <span class="math">\(D_C\)</span> is a characteristic size of the deflection. Introducing <span class="math">\(\bar{R_0} = R_0 / R\)</span> we obtain</p>
-<div class="math">
-\[\begin{split}- \frac{\partial ^2 w }{\partial \bar{x} ^2} - \frac{\partial ^2 w }{\partial \bar{y} ^2} = \alpha \exp \left( - \beta ^2 (\bar{x}^2 + (\bar{y} - R_0)^2 )  \right) \quad \text{ for } \bar{x}^2 + \bar{y}^2 &lt; 1\end{split}\]</div>
-<p>where</p>
-<div class="math">
-\[\alpha = \frac{R^2A}{2 \pi T D_c \sigma}, \quad \beta = \frac{R}{\sqrt{2} \sigma}\]</div>
-<p>With the appropriate scaling, <span class="math">\(w\)</span> and its derivatives are of size unity, so the LHS of the scaled PDE is about unity in size, while the right hand side has <span class="math">\(\alpha\)</span> as its characteristic size. This suggests choosing <span class="math">\(\alpha\)</span> to be unity, or around unity. We shall in this particular case choose <span class="math">\(\alpha = 4\)</span> (One can also find the analytical solution in scaled coordinates and show that the maximum deflection <span class="math">\(D(0, 0)\)</span> is <span class="math">\(D_c\)</span> if we choose <span class="math">\(\alpha = 4\)</span> to determine <span class="math">\(D_c\)</span>). With <span class="math">\(D_c = A R^2  / (8 \pi \sigma T)\)</span> and dropping the bars for convenience we obtain the scaled problem</p>
-<div class="math">
-\[- \nabla ^2 w = 4 \exp \left( - \beta^2(x^2+(y-R_0)^2) \right)\]</div>
-<p>to be solved over the unit disc with <span class="math">\(w = 0\)</span> on the boundary. Now there are only two parameters to vary: the dimensionless extent of the pressure <span class="math">\(\beta\)</span> and the localization of the pressure peak <span class="math">\(R_0 \in [0, 1]\)</span>. As <span class="math">\(\beta \rightarrow 0\)</span>, the solution will approach the special case <span class="math">\(w = 1 - x^2 - y^2\)</span></p>
-<p>Given a computed scaled solution <span class="math">\(w\)</span> the physical deflection can be computed by</p>
-<div class="math">
-\[D = \frac{AR^2}{8 \pi \sigma T} w\]</div>
-<dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">ch2.demo_poisson_2_4.</code><code class="descname">PoissonDemo24</code><span class="sig-paren">(</span><em>n</em>, <em>beta=8</em>, <em>R0=0.6</em><span class="sig-paren">)</span></dt>
-<dd><p>Solving this problem is very similar to the previous test problem, with just a few modifications.</p>
-<p><strong>Defining a unit disk mesh:</strong></p>
-<p>A mesh over the unit disk can be created by the <code class="code docutils literal"><span class="pre">mshr</span></code> tool in FEniCS. The <code class="code docutils literal"><span class="pre">Circle</span></code> shape from <code class="code docutils literal"><span class="pre">mshr</span></code> takes the center and radius of the circle as arguments. The second argument to <code class="code docutils literal"><span class="pre">generate_mesh</span></code> specifies the desired mesh resolution. The cell size will be (approximately) equal to the diameter of the domain divided by the resolution.</p>
-<p><strong>Defining the load:</strong></p>
-<p>We use an <code class="code docutils literal"><span class="pre">Expression</span></code> object to represent the pressure function in our PDE. We set the physical parameters <span class="math">\(\beta\)</span> and <span class="math">\(R_0\)</span> by keyword arguments. The coordinates in Expression objects are always an array <code class="code docutils literal"><span class="pre">x</span></code> with components <code class="code docutils literal"><span class="pre">x[0],</span> <span class="pre">x[1],</span> <span class="pre">x[2]</span></code> corresponding with <span class="math">\(x\)</span>, <span class="math">\(y\)</span>, and <span class="math">\(z\)</span>. Otherwise we are free to introduce names of parameters as long as these are given default values by keyword arguments. All the parameters initialized by keyword arguments can at any time have their values modified.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="mi">12</span>
-<span class="n">p</span><span class="o">.</span><span class="n">R0</span> <span class="o">=</span> <span class="mf">0.3</span>
-</pre></div>
-</div>
-<p><strong>Defining the variational problem:</strong></p>
-<p>The variational problem and boundary conditions are the same as in our first Poisson problem, but we introduce <code class="code docutils literal"><span class="pre">w</span></code> instead of <code class="code docutils literal"><span class="pre">u</span></code> as primary unknown and <code class="code docutils literal"><span class="pre">p</span></code> instead of <code class="code docutils literal"><span class="pre">f</span></code> as right-hand side function to better align with our problem description.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">TrialFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-<span class="n">v</span> <span class="o">=</span> <span class="n">TestFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
-<span class="n">L</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">v</span> <span class="o">*</span> <span class="n">dx</span>
-
-<span class="n">w</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-<span class="n">solve</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">L</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bc</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</div>
-</div>
-</div>
-<div class="section" id="chapter-3-a-gallery-of-finite-element-solvers">
-<h2>Chapter 3: A Gallery of finite element solvers<a class="headerlink" href="#chapter-3-a-gallery-of-finite-element-solvers" title="Permalink to this headline">¶</a></h2>
-<p>The goal of this chapter is to demonstrate how a range of important PDEs from science and engineering can be quickly solved with a few lines of FEniCS code. We start with the heat equation and continue with a nonlinear Poisson equation, the equations for linear elasticity, the Navier–Stokes equations, and finally look at how to solve systems of nonlinear advection–diffusion–reaction equations. These problems illustrate how to solve time-dependent problems, nonlinear problems, vector-valued problems, and systems of PDEs. For each problem, we derive the variational formulation and express the problem in Python in a way that closely resembles the mathematics.</p>
-<div class="section" id="the-heat-equation">
-<h3>3.1 The Heat Equation<a class="headerlink" href="#the-heat-equation" title="Permalink to this headline">¶</a></h3>
-<p>As our first extension of the Poisson problem, we consider the time-dependent heat equation, or the time-dependent diffusion equation.</p>
-<div class="section" id="the-pde-problem">
-<h4>The PDE problem:<a class="headerlink" href="#the-pde-problem" title="Permalink to this headline">¶</a></h4>
-<p>Our model problem for time-dependent PDEs reads</p>
-<div class="math">
-\[\begin{split}\frac{\partial u}{\partial t} = \nabla^2u + f &amp; \quad &amp; \text{ in } \Omega \times (0, T] \\
-u = u_D &amp; \quad &amp; \text{ on } \partial \Omega \times (0, T] \\
-u = u_0 &amp; \quad &amp; \text{ at } t = 0\end{split}\]</div>
-<p>Here, <span class="math">\(u\)</span> varies with space <em>and</em> time. The source functiona nd the boundary values may also vary with space and time. The initial condition <span class="math">\(u_0\)</span> is a function of space only.</p>
-</div>
-<div class="section" id="id1">
-<h4>Variational Formulation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
-<p>A straightforward approach to solving time-dependent PDEs by the finite element method is to first discretize the time derivative by a finite difference approximation, which yields a sequence of stationary problems, and then in turn each stationary problem into a variational formulation.</p>
-<p>Let superscript <span class="math">\(n\)</span> denote a quantity at time <span class="math">\(t_n\)</span> where <span class="math">\(n\)</span> is an integer counting time levels. For example, <span class="math">\(u^n\)</span> means <span class="math">\(u\)</span> at time level <span class="math">\(n\)</span>. A finite difference discretization in time first consists of samling the PDE at some level, say <span class="math">\(t_{n+1}\)</span>:</p>
-<div class="math">
-\[\left( \frac{\partial u}{\partial t}  \right)^{n + 1} = \nabla ^2 u^{n + 1} + f ^{n+1}\]</div>
-<p>The time-derivative can be approximated by a difference quotient. For simplicity and stability reasons, we choose a simple backward difference:</p>
-<div class="math">
-\[\left( \frac{\partial u}{\partial t} \right)^{n+1} \approx \frac{u^{n+1} - u^n}{\Delta t}\]</div>
-<p>where <span class="math">\(\Delta t\)</span> is the time discretization parameter. Combining these two expressions we get</p>
-<div class="math">
-\[\frac{u^{n+1} - u^n}{\Delta t}  = \nabla ^2 u^{n+1} + f^{n+1}\]</div>
-<p>This is our time-discrete version of the heat equation, a so-called backward Euler or &#8220;implicit Euler&#8221; discretization.</p>
-<p>We may reorder so that the LHS contains the terms with the unknown <span class="math">\(u^{n+1}\)</span> and the RHS contains computed terms only. The result is a sequence of spatial (stationary) problems for <span class="math">\(u^{n+1}\)</span>, assuming <span class="math">\(u^{n}\)</span> is known from the previous time step:</p>
-<div class="math">
-\[\begin{split}u^{0}  &amp; = &amp; u_0 \\
-u^{n+1} - \Delta t \nabla ^2 u^{n+1} &amp; = &amp; u^n + \Delta t f^{n+1}, \quad n = 0, 1, 2\end{split}\]</div>
-<p>Given <span class="math">\(u_0\)</span> we can solve for <span class="math">\(u^0\)</span>, <span class="math">\(u^1\)</span>, <span class="math">\(u^2\)</span>, and so on.</p>
-<p>An alternative which can be convenient in implementations is to collect all terms on one side of the equality sign:</p>
-<div class="math">
-\[u^{n+1} - \Delta t \nabla ^2 u^{n+1} -  u^n - \Delta t f^{n+1}= 0, \quad n = 0, 1, 2\]</div>
-<p>We use a finite element method to solve <span class="math">\(u^{0} = u_0\)</span> and either of the above expressions. This requires turning the equations into weak forms. As usual we multiply by a test function <span class="math">\(v \in \hat{V}\)</span> and integrate second-derivatives by parts. Introducing the symbol <span class="math">\(u\)</span> for <span class="math">\(u^{n+1}\)</span> (which is natural in code), the resulting weak form can be conveniently written in the standard notation:</p>
-<div class="math">
-\[a(u, v) = L_{n+1}(v),\]</div>
-<p>where</p>
-<div class="math">
-\[\begin{split}a(u, v) = \int_{\Omega} (uv + \Delta t \nabla u \cdot \nabla v) dx, \\
-L_{n+1} (v) = \int_{\Omega} (u^n + \Delta t f^{n+1}) v\, dx\end{split}\]</div>
-<p>In addition to the variational problem to be solved in each time step, we also need to approximate the initial condition. This equation can also be turned into a variational problem:</p>
-<div class="math">
-\[a_0(u, v) = L_0(v),\]</div>
-<p>with</p>
-<div class="math">
-\[\begin{split}a_0(u, v) &amp; = &amp; \int_{\Omega} uv \, dx \\
-L_0(v) &amp; = &amp; \int_\Omega u_0 v \, dx\end{split}\]</div>
-<p>When solving this variational problem, <span class="math">\(u^0\)</span> becomes the <span class="math">\(L^2\)</span> projection of the initial value <span class="math">\(u_0\)</span> into the finite element space. The alternative is to construct <span class="math">\(u^0\)</span> by just interpolating the initial value <span class="math">\(u_0\)</span>; that is, if <span class="math">\(u^0 = \sum ^N _{j = 1} U{_j}{^0}\phi_j\)</span> we simply set <span class="math">\(U_j = u_0(x_j, y_j)\)</span> where <span class="math">\((x_j, y_j)\)</span> are the coordinates of node number <span class="math">\(j\)</span>.
-We refer to these two strategies as computing the initial condition by either &#8220;projection&#8221; or &#8220;interpolation&#8221;. Both operations are easy to compute in FEniCS through a single statement, using either <code class="code docutils literal"><span class="pre">project</span></code> or <code class="code docutils literal"><span class="pre">interpolate</span></code> function. The most common choice is <code class="code docutils literal"><span class="pre">project</span></code> which computes an approximation to <span class="math">\(u_0\)</span>, but in some applications where we want to verify the code by reproducing exact solutions, one must use <code class="code docutils literal"><span class="pre">interpolate</span></code> (and we use such a test problem here!)</p>
-<p>In summary, we thus need to solve the following sequence of variational problems to compute the finite element solution to the heat equation: find <span class="math">\(u^0 \in V\)</span> such that <span class="math">\(a_0(u^0, v) = L_0(v)\)</span> holds for all <span class="math">\(v \in \hat{V}\)</span>, and then find <span class="math">\(u^{n+1} \in V\)</span> such that <span class="math">\(a(u^{n+1}, v) = L_{n+1} (v)\)</span> for all <span class="math">\(v \in \hat{V}\)</span>, or alternatively, <span class="math">\(F_{n+1}(u^{n+1}, v) = 0\)</span> for all <span class="math">\(v \in \hat{V}\)</span>, for <span class="math">\(n = 0, 1, 2, \ldots\)</span></p>
-<dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">ch3.heat_equation.</code><code class="descname">ATestProblem</code><span class="sig-paren">(</span><em>n_s=300</em>, <em>T=2.0</em>, <em>alpha=3</em>, <em>beta=1.2</em>, <em>steps=40</em><span class="sig-paren">)</span></dt>
-<dd><p>Just as for the Poisson problem from the previous chapter, we construct a test problem that makes it easy to determine if the calculations are correct. Since we know that our first-order time-stepping scheme is exact for linear functions, we create a test problem which has linear variation in time. We combine this with a quadratic variation in space:</p>
-<div class="math">
-\[u = 1 + x^2 + \alpha y^2 + \beta t\]</div>
-<p>which yields a function whose computed values at the nodes will be exact, regardless of the size of the elements and <span class="math">\(\Delta t\)</span>, as long as the mesh is uniformly partitioned. By inserting ^ into the heat equation, we find that the RHS <span class="math">\(f\)</span> must be given by <span class="math">\(f(x, y, t) = \beta - 2 - 2 \alpha\)</span>. The boundary value is <span class="math">\(u_D(x, y, t) = 1 + x^2 + \alpha y^2 + \beta t\)</span> and the initial value is <span class="math">\(u_0(x, y) = 1 + x^2 + \alpha y^2\)</span>.</p>
-<p>A new issue is how to deal with functions that vary in both space and time, such as our boundary condition here <span class="math">\(u_D(x, y, t) = 1 + x^2 + \alpha y^2 + \beta t\)</span>. A natural solution is to use a FEniCS <code class="code docutils literal"><span class="pre">Expression</span></code> with time t as a parameter, in additional to the physical parameters:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> <span class="n">beta</span> <span class="o">=</span> <span class="mf">1.2</span>
-<span class="n">u_D</span> <span class="o">=</span> <span class="n">Expression</span><span class="p">(</span><span class="s1">&#39;1 + x[0]*x[0] + alpha*x[1]*x[1] + beta*t&#39;</span><span class="p">,</span>
-                 <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>We use the variable <code class="code docutils literal"><span class="pre">u</span></code> for the unknown <span class="math">\(u^{n+1}\)</span> at the new time step and the variable <code class="code docutils literal"><span class="pre">u_n</span></code> for <span class="math">\(u^n\)</span> at the previous time step. The initial value of <code class="code docutils literal"><span class="pre">u_n</span></code> can be computed by either projection or interpolation of <span class="math">\(u_0\)</span>. Since we set <code class="code docutils literal"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0</span></code> for the boundary value <code class="code docutils literal"><span class="pre">u_D</span></code>, we can use <code class="code docutils literal"><span class="pre">u_D</span></code> to specify the initial condition:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">u_n</span> <span class="o">=</span> <span class="n">project</span><span class="p">(</span><span class="n">u_D</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
-<span class="c1"># or</span>
-<span class="n">u_n</span> <span class="o">=</span> <span class="n">interpolate</span><span class="p">(</span><span class="n">u_D</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>We can either define <span class="math">\(a\)</span> or <span class="math">\(L\)</span> according to the formulas we have above, or we may just define <span class="math">\(F\)</span> and ask FEniCS to figure out which terms should go into the bilinear form <span class="math">\(a\)</span> and which should go into the linear form <span class="math">\(L\)</span>. The latter is convenient, especially in more complicated problems, so we illustrate that construction of <span class="math">\(a\)</span> and <span class="math">\(L\)</span>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">TrialFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-<span class="n">v</span> <span class="o">=</span> <span class="n">TestFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-<span class="n">f</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-<span class="n">F</span> <span class="o">=</span> <span class="n">u</span> <span class="o">*</span> <span class="n">v</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">dot</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">-</span> <span class="p">(</span><span class="n">u_n</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">f</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">*</span> <span class="n">dx</span>
-<span class="n">a</span><span class="p">,</span> <span class="n">L</span> <span class="o">=</span> <span class="n">lhs</span><span class="p">(</span><span class="n">F</span><span class="p">),</span> <span class="n">rhs</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Finally, we can perform the time-stepping in a loop</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fid</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;test_problem/solution.pvd&quot;</span><span class="p">)</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-<span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span><span class="p">):</span>
-    <span class="c1"># Update current time</span>
-    <span class="n">t</span> <span class="o">+=</span> <span class="n">dt</span>
-    <span class="n">u_D</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">t</span>
-    <span class="c1"># Compute solution</span>
-    <span class="n">solve</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">L</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">bc</span><span class="p">)</span>
-    <span class="n">fid</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="p">,</span> <span class="n">t</span>
-    <span class="n">u_n</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">ch3.heat_equation.</code><code class="descname">BHeatEquation</code><span class="sig-paren">(</span><em>n_s=300</em>, <em>T=2.0</em>, <em>a=5</em>, <em>steps=40</em><span class="sig-paren">)</span></dt>
-<dd><p>Thermal diffusion of a Gaussian fuction. We&#8217;d like to solve for the thermal diffusion of the following gaussian initial temperature distribution:</p>
-<div class="math">
-\[u_0(x, y) = e^{-ax^2 -ay^2}\]</div>
-<p>with <span class="math">\(a = 5\)</span> on the domain <span class="math">\([-2, 2] \times [2, 2]\)</span>. For this problem we will use homogeneous Dirichlet boundary conditions (<span class="math">\(u_D = 0\)</span>).</p>
-<p>The major changes required from our previous problem are: we now have a rectangular domain that isn&#8217;t the unit square, so we use <code class="code docutils literal"><span class="pre">RectangleMesh</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nx</span> <span class="o">=</span> <span class="n">ny</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">RectangleMesh</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Note that we have used a much higher resolution than before to better resolve the features of the solution. We also need to define the initial condition and boundary condition. Both are easily changed by adding a new <code class="code docutils literal"><span class="pre">Expression</span></code> and by setting <span class="math">\(u = 0\)</span> on the boundary.</p>
-</dd></dl>
-
-</div>
-</div>
-<div class="section" id="a-nonlinear-poisson-equation">
-<h3>3.2: A Nonlinear Poisson Equation<a class="headerlink" href="#a-nonlinear-poisson-equation" title="Permalink to this headline">¶</a></h3>
-<p>We now try to address how to solve nonlinear PDEs. By defining a nonlinear variational problem and calling the <code class="code docutils literal"><span class="pre">solve</span></code> function, they become just as easy as the linear ones. When we do so, we encounter a subtle difference in how the variational problem is defined.</p>
-<p><strong>Model Problem</strong></p>
-<p>As a model problem for the solution of nonlinear PDEs, we take the following nonlinear Poisson equation:</p>
-<div class="math">
-\[- \nabla \cdot (q(u) \nabla u ) = f\]</div>
-<p>in <span class="math">\(\Omega\)</span> with <span class="math">\(u = u_D\)</span> on the boundary <span class="math">\(\partial \Omega\)</span>. The coefficient <span class="math">\(q = q(u)\)</span> makes the equation nonlinear (unless <span class="math">\(q(u)\)</span> is constant in <span class="math">\(u\)</span>).</p>
-<dl class="function">
-<dt>
-<code class="descclassname">ch3.nonlinear_pdes.</code><code class="descname">ANonlinearTest</code><span class="sig-paren">(</span><em>object</em><span class="sig-paren">)</span></dt>
-<dd><p>Docs here</p>
-</dd></dl>
-
-</div>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ch2.html">Chapter 2: Fundamentals</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch2.html#finite-element-variational-problems">2.1 - 2.3 Finite Element Variational Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch2.html#deflection-of-a-membrane">2.4 Deflection of a Membrane</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ch3.html">Chapter 3: A Gallery of finite element solvers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch3.html#the-heat-equation">3.1 The Heat Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch3.html#a-nonlinear-poisson-equation">3.2: A Nonlinear Poisson Equation</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 

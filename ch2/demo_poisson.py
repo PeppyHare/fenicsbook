@@ -103,6 +103,10 @@ class PoissonDemo():
         E = \sqrt{ \int_{\Omega} (u_D - u)^2 dx }
 
     Since the exact solution is quadratic and the finite element solution is piecewise linear, this error will be nonzero. To compute this error in FEniCS just use the :code:`errornorm` function.
+
+    .. figure:: ch2/demo_poisson_1.png
+
+        Solution to the Poisson equation with a test quadratic :math:`u_e(x, y) = 1 + x^2 + y^2` and 8x8 spatial grid spacing
     '''
 
     def __init__(self, n):
@@ -135,6 +139,9 @@ class PoissonDemo():
         # Plot solution and mesh
         plot(u)
         plot(mesh)
+
+        # Save rasterized solution
+        plt.savefig('demo_poisson_1.png', bbox_inches='tight')
 
         # Save solution to file in VTK format
         vtkfile = File('poisson/solution.pvd')

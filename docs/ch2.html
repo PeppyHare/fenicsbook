@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Chapter 2: Fundamentals &mdash; 2016book  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="2016book  documentation" href="index.html"/>
+        <link rel="next" title="Chapter 3: A Gallery of finite element solvers" href="ch3.html"/>
+        <link rel="prev" title="Welcome to 2016book’s documentation!" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> 2016book
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Chapter 2: Fundamentals</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#finite-element-variational-problems">2.1 - 2.3 Finite Element Variational Problems</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#variational-formulation">Variational Formulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#abstract-variational-formulation">Abstract variational formulation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#deflection-of-a-membrane">2.4 Deflection of a Membrane</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#problem-description">Problem Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scaling-the-equation">Scaling the Equation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ch3.html">Chapter 3: A Gallery of finite element solvers</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">2016book</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Chapter 2: Fundamentals</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ch2.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="chapter-2-fundamentals">
+<h1>Chapter 2: Fundamentals<a class="headerlink" href="#chapter-2-fundamentals" title="Permalink to this headline">¶</a></h1>
+<p>Here we take a brief peek at the most basic FEniCS capabilities by solving the Poisson equation, the &#8220;hello world&#8221; of PDEs.</p>
+<div class="section" id="finite-element-variational-problems">
+<h2>2.1 - 2.3 Finite Element Variational Problems<a class="headerlink" href="#finite-element-variational-problems" title="Permalink to this headline">¶</a></h2>
+<p>Introduction to the finite element variational method!</p>
+<p>The &#8220;hello world&#8221; of the finite element methods for PDEs is the Poisson equation, which consists of the following boundary value problem:</p>
+<div class="math">
+\[\begin{split}- \nabla ^2 u(x) = f(x) : \quad x \text{  in  } \Omega \\
+u(x) = u_D(x) : \quad x \text{  on  } \partial \Omega\end{split}\]</div>
+<p>Here u is our unknown function, f = f(x) is a prescribed function, <span class="math">\(\nabla^2\)</span> is the Laplace operator, <span class="math">\(\Omega\)</span> is the spatial domain, and <span class="math">\(\partial \Omega\)</span> is the boundary of <span class="math">\(\Omega\)</span></p>
+<p>Solving such a boundary-value problem in fenics involves:</p>
+<ol class="arabic simple">
+<li>Identify the computational domain, the PDE, its boundary conditions, and source terms (f).</li>
+<li>Reformulate the PDE as a finite element variational problem.</li>
+<li>Write a Python program which defines the computational domain, the variational problem, the boundary conditions, and source terms using the corresponding FEniCS abstractions.</li>
+<li>Call FEniCS to solve the boundary-value problem and, optionally, extend the program to compute derived quantities such as fluxes and averages, and visualize the results.</li>
+</ol>
+<div class="section" id="variational-formulation">
+<h3>Variational Formulation<a class="headerlink" href="#variational-formulation" title="Permalink to this headline">¶</a></h3>
+<p>We&#8217;ll need a brief introduction to the variational method here. The basic recipe for turning a PDE into a variational problem is to multiply the PDE by a vunction v, integrate the resulting equation over the domain <span class="math">\(\Omega\)</span>, and perform integration by parts of terms with second-order derivatives. The function v which multiplies the PDE is called a <em>test function</em>.The unknown function <em>u</em> to be approximated is referred to as a <em>trial function</em>. The terms trial and test functions are used in FEniCS programs too. The trial and test functions belong to certain function spaces that specify the properties of the functions.</p>
+<p>For an example, we do just that for the Poisson equation</p>
+<div class="math">
+\[-\int _{\Omega} ( \nabla ^2 u)v \, dx = \int _{\Omega} f v \, dx\]</div>
+<p>What we&#8217;d like to do is decrease the order of the derivatives of <em>u</em> and <em>v</em> as much as possible, so of course we&#8217;ll be integrating by parts. To make the variational formulation work, we choose a function space such that the test function is required to vanish on the parts of the boundary where the solution <em>u</em> is known. This means that we get to drop the boundary terms, and we can pull off derivatives from <em>u</em> at the cost of a minus sign:</p>
+<div class="math">
+\[\int_{\Omega} \nabla u \cdot \nabla v \, dx = \int_{\Omega} f v \, dx\]</div>
+<p>We can then define our original PDE as the variational problem: find <span class="math">\(v \in V\)</span> such that</p>
+<div class="math">
+\[\int_{\Omega} \nabla u \cdot \nabla v \, dx = \int_{\Omega} f v \, dx \quad \forall v \in \hat{V}\]</div>
+<p>where the trial and test spaces <span class="math">\(V\)</span> and <span class="math">\(\hat{V}\)</span> are in the present problem defined as</p>
+<div class="math">
+\[\begin{split}V &amp; = &amp; { v \in H^1(\Omega) : v = u_D \text{ on } \partial \Omega } \\
+\hat{V} &amp; = &amp; { v \in H^1(\Omega) : v = 0 \text{ on } \partial \Omega }\end{split}\]</div>
+<p>Our finite element solver finds an approximate solution to this problem by replacing the infinite-dimentional function spaces by discrete trial and test spaces. Once we&#8217;re there, voila! FEniCS can take care of the rest.</p>
+</div>
+<div class="section" id="abstract-variational-formulation">
+<h3>Abstract variational formulation<a class="headerlink" href="#abstract-variational-formulation" title="Permalink to this headline">¶</a></h3>
+<p>It&#8217;s convenient to introduce some notation for variational problems: find <span class="math">\(u \in V\)</span> such that</p>
+<div class="math">
+\[a(u, v) = L(v) \quad \forall v \in \hat{V}\]</div>
+<p>In our example of the Poisson equation, we have:</p>
+<div class="math">
+\[\begin{split}a(u, v) &amp; = &amp; \int_{\Omega} \nabla u \cdot \nabla v \, dx \\
+L(v) &amp; = &amp; \int_\Omega f v \, dx\end{split}\]</div>
+<p>Here we say <span class="math">\(a(u, v)\)</span> is a <em>bilinear form</em> and <span class="math">\(L(v)\)</span> is a <em>linear form</em>. In each problem we want to solve, we&#8217;ll identify the terms with the unknown <em>u</em> and collect them in <span class="math">\(a(u, v)\)</span>, and similarly collect all terms with only known functions in <span class="math">\(L(v)\)</span>.</p>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">ch2.demo_poisson.</code><code class="descname">PoissonDemo</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span></dt>
+<dd><p>Here we are trying to solve a problem we already know the answer to. Solutions that are low-order polynomials are great candidates to check the accuracy of our solution, as standard finite element function spaces of degree <em>r</em> will exactly reproduce polynomials of degree <em>r</em>. We manufacture some quadratic function in 2D as our exact solution, say</p>
+<div class="math">
+\[u_e(x, y) = 1 + x^2 + 2y^2\]</div>
+<p>By inserting this into the Poisson equation we find that it is a solution if</p>
+<div class="math">
+\[\begin{split}f(x, y) &amp; = &amp; -6 \\
+u_D(x, y) &amp; = &amp; u_e(x, y) = 1 + x^2 + 2y^2\end{split}\]</div>
+<p>For simplicity, we&#8217;ll deal with the unit square as our domain</p>
+<div class="math">
+\[\Omega = [0,1] \times [0,1]\]</div>
+<p>The code in this module shows how to solve this example problem in FEniCS, and since we already know the answer, we also compute the L2 error of our solution. Since we expect our discrete space to exactly reproduce the solution, the error should be within machine precision.</p>
+<p>We define our function space by first defining a mesh. We use <code class="code docutils literal"><span class="pre">UnitSquareMesh</span></code> to define a uniform finite element mesho over the unit square, which consists of cells (2D triangles) with straight sides. We then define the function space using <code class="code docutils literal"><span class="pre">FunctionSpace</span></code>. The second argument &#8220;P&#8221; determines the type of element. Here we use the standard Lagrange family of elements. There are other simplex element families supported and defined in the Periodic Table of the Finite Elements (<a class="reference external" href="https://www.femtable.org">https://www.femtable.org</a>)</p>
+<p><strong>Computing the Error</strong>:</p>
+<p>Since we&#8217;ve chosen a problem we already know the solution to, we can compute the error to check the accuracy of the simulation. We do this by comparing the finite element solution <code class="code docutils literal"><span class="pre">u</span></code> with the exact solution, which in this example happens to be the same as the expression <code class="code docutils literal"><span class="pre">u_D</span></code> used to set the boundary conditions. We compute the error in two different ways. First, we compute the <span class="math">\(L^2\)</span> norm of the error, defined by</p>
+<div class="math">
+\[E = \sqrt{ \int_{\Omega} (u_D - u)^2 dx }\]</div>
+<p>Since the exact solution is quadratic and the finite element solution is piecewise linear, this error will be nonzero. To compute this error in FEniCS just use the <code class="code docutils literal"><span class="pre">errornorm</span></code> function.</p>
+<div class="figure" id="id1">
+<img alt="_images/demo_poisson_1.png" src="_images/demo_poisson_1.png" />
+<p class="caption"><span class="caption-text">Solution to the Poisson equation with a test quadratic <span class="math">\(u_e(x, y) = 1 + x^2 + y^2\)</span> and 8x8 spatial grid spacing</span></p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="deflection-of-a-membrane">
+<h2>2.4 Deflection of a Membrane<a class="headerlink" href="#deflection-of-a-membrane" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="problem-description">
+<h3>Problem Description<a class="headerlink" href="#problem-description" title="Permalink to this headline">¶</a></h3>
+<p>After kicking the tires with a test problem where we know the answer, we turn to a physically more relevant problem with solutions of a somewhat more exciting shape.</p>
+<p>We want to compute the deflection <span class="math">\(D(x, y)\)</span> of a two-dimensional circular membrane of radius <span class="math">\(R\)</span>, subject to a load <span class="math">\(p\)</span> over the membrane. The appropriate PDE model is</p>
+<div class="math">
+\[-T \nabla ^2 D = p \quad \text{ in } \Omega = \{ (x, y) | x^2 + y^2 \leq R \}\]</div>
+<p>Here <span class="math">\(T\)</span> is the tension in the membrane (constant), <span class="math">\(p\)</span> is the external pressure load. The boundary of the membrane has no deflection, implying <span class="math">\(D=0\)</span> as a boundary condition. We&#8217;ll model a localized load as a Gaussian:</p>
+<div class="math">
+\[p(x, y) = \frac{A}{2\pi \sigma} \exp \left( - \frac{1}{2} \left( \frac{x - x_0}{\sigma} \right)^2  - \frac{1}{2} \left( \frac{y -y_0}{\sigma}  \right)^2 \right)\]</div>
+<p>The parameter <span class="math">\(A\)</span> is the amplitude of the pressure, <span class="math">\((x_0, y_0)\)</span> the localization of the maximum point of the load, and <span class="math">\(\sigma\)</span> the &#8220;width&#8221; of the load. We will take the center of the pressure to <span class="math">\((0, R_0)\)</span> for some <span class="math">\(0 &lt; R_0 &lt; R\)</span></p>
+</div>
+<div class="section" id="scaling-the-equation">
+<h3>Scaling the Equation<a class="headerlink" href="#scaling-the-equation" title="Permalink to this headline">¶</a></h3>
+<p>We have a lot of physics parameters in the problem, and as with any such problem we can improve our numerical precision by grouping them by means of scaling. We introduce dimensionless coordinates <span class="math">\(\bar{x} = x / R, \, \bar{y} = y / R\)</span> and a dimensionless deflection <span class="math">\(w = D / D_c\)</span> where <span class="math">\(D_C\)</span> is a characteristic size of the deflection. Introducing <span class="math">\(\bar{R_0} = R_0 / R\)</span> we obtain</p>
+<div class="math">
+\[\begin{split}- \frac{\partial ^2 w }{\partial \bar{x} ^2} - \frac{\partial ^2 w }{\partial \bar{y} ^2} = \alpha \exp \left( - \beta ^2 (\bar{x}^2 + (\bar{y} - R_0)^2 )  \right) \quad \text{ for } \bar{x}^2 + \bar{y}^2 &lt; 1\end{split}\]</div>
+<p>where</p>
+<div class="math">
+\[\alpha = \frac{R^2A}{2 \pi T D_c \sigma}, \quad \beta = \frac{R}{\sqrt{2} \sigma}\]</div>
+<p>With the appropriate scaling, <span class="math">\(w\)</span> and its derivatives are of size unity, so the LHS of the scaled PDE is about unity in size, while the right hand side has <span class="math">\(\alpha\)</span> as its characteristic size. This suggests choosing <span class="math">\(\alpha\)</span> to be unity, or around unity. We shall in this particular case choose <span class="math">\(\alpha = 4\)</span> (One can also find the analytical solution in scaled coordinates and show that the maximum deflection <span class="math">\(D(0, 0)\)</span> is <span class="math">\(D_c\)</span> if we choose <span class="math">\(\alpha = 4\)</span> to determine <span class="math">\(D_c\)</span>). With <span class="math">\(D_c = A R^2  / (8 \pi \sigma T)\)</span> and dropping the bars for convenience we obtain the scaled problem</p>
+<div class="math">
+\[- \nabla ^2 w = 4 \exp \left( - \beta^2(x^2+(y-R_0)^2) \right)\]</div>
+<p>to be solved over the unit disc with <span class="math">\(w = 0\)</span> on the boundary. Now there are only two parameters to vary: the dimensionless extent of the pressure <span class="math">\(\beta\)</span> and the localization of the pressure peak <span class="math">\(R_0 \in [0, 1]\)</span>. As <span class="math">\(\beta \rightarrow 0\)</span>, the solution will approach the special case <span class="math">\(w = 1 - x^2 - y^2\)</span></p>
+<p>Given a computed scaled solution <span class="math">\(w\)</span> the physical deflection can be computed by</p>
+<div class="math">
+\[D = \frac{AR^2}{8 \pi \sigma T} w\]</div>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">ch2.demo_poisson_2_4.</code><code class="descname">PoissonDemo24</code><span class="sig-paren">(</span><em>n</em>, <em>beta=8</em>, <em>R0=0.6</em><span class="sig-paren">)</span></dt>
+<dd><p>Solving this problem is very similar to the previous test problem, with just a few modifications.</p>
+<p><strong>Defining a unit disk mesh:</strong></p>
+<p>A mesh over the unit disk can be created by the <code class="code docutils literal"><span class="pre">mshr</span></code> tool in FEniCS. The <code class="code docutils literal"><span class="pre">Circle</span></code> shape from <code class="code docutils literal"><span class="pre">mshr</span></code> takes the center and radius of the circle as arguments. The second argument to <code class="code docutils literal"><span class="pre">generate_mesh</span></code> specifies the desired mesh resolution. The cell size will be (approximately) equal to the diameter of the domain divided by the resolution.</p>
+<p><strong>Defining the load:</strong></p>
+<p>We use an <code class="code docutils literal"><span class="pre">Expression</span></code> object to represent the pressure function in our PDE. We set the physical parameters <span class="math">\(\beta\)</span> and <span class="math">\(R_0\)</span> by keyword arguments. The coordinates in Expression objects are always an array <code class="code docutils literal"><span class="pre">x</span></code> with components <code class="code docutils literal"><span class="pre">x[0],</span> <span class="pre">x[1],</span> <span class="pre">x[2]</span></code> corresponding with <span class="math">\(x\)</span>, <span class="math">\(y\)</span>, and <span class="math">\(z\)</span>. Otherwise we are free to introduce names of parameters as long as these are given default values by keyword arguments. All the parameters initialized by keyword arguments can at any time have their values modified.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">p</span><span class="o">.</span><span class="n">R0</span> <span class="o">=</span> <span class="mf">0.3</span>
+</pre></div>
+</div>
+<p><strong>Defining the variational problem:</strong></p>
+<p>The variational problem and boundary conditions are the same as in our first Poisson problem, but we introduce <code class="code docutils literal"><span class="pre">w</span></code> instead of <code class="code docutils literal"><span class="pre">u</span></code> as primary unknown and <code class="code docutils literal"><span class="pre">p</span></code> instead of <code class="code docutils literal"><span class="pre">f</span></code> as right-hand side function to better align with our problem description.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">TrialFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">TestFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">v</span> <span class="o">*</span> <span class="n">dx</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+<span class="n">solve</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">L</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">bc</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ch3.html" class="btn btn-neutral float-right" title="Chapter 3: A Gallery of finite element solvers" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to 2016book’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Evan Bluhm.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
