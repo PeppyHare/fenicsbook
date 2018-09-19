@@ -18,6 +18,7 @@ The goal of this chapter is to demonstrate how a range of important PDEs from sc
     :noindex:
 
 3.3: Linear Elasticity
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: ch3.linear_elasticity
     :members:

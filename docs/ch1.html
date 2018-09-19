@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; 2016book  documentation</title>
+  <title>Chapter 1: Intro &mdash; 2016book  documentation</title>
   
 
   
@@ -30,7 +30,9 @@
   
 
   
-    <link rel="top" title="2016book  documentation" href="index.html"/> 
+    <link rel="top" title="2016book  documentation" href="index.html"/>
+        <link rel="next" title="Chapter 2: Fundamentals" href="ch2.html"/>
+        <link rel="prev" title="Welcome to 2016book’s documentation!" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -61,7 +63,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -75,8 +77,12 @@
           
             
             
-                <ul>
-<li class="toctree-l1"><a class="reference internal" href="ch1.html">Chapter 1: Intro</a></li>
+                <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Chapter 1: Intro</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-fenics">Running FEniCS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-the-docs">Building the docs</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="ch2.html">Chapter 2: Fundamentals</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ch3.html">Chapter 3: A Gallery of finite element solvers</a></li>
 </ul>
@@ -101,7 +107,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -109,8 +115,12 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>Search</li>
+    <li>Chapter 1: Intro</li>
       <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ch1.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
   </ul>
@@ -119,23 +129,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search
-      functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="chapter-1-intro">
+<h1>Chapter 1: Intro<a class="headerlink" href="#chapter-1-intro" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="running-fenics">
+<h2>Running FEniCS<a class="headerlink" href="#running-fenics" title="Permalink to this headline">¶</a></h2>
+<p>I&#8217;ve found that using the &#8220;FEniCS in Docker&#8221; setup yields great results, and building FEniCS from source is extremely painful. Simply follow <a class="reference external" href="https://fenics.readthedocs.id/projects/containers/en/latest">https://fenics.readthedocs.id/projects/containers/en/latest</a> to get started</p>
+</div>
+<div class="section" id="building-the-docs">
+<h2>Building the docs<a class="headerlink" href="#building-the-docs" title="Permalink to this headline">¶</a></h2>
+<p>To build these docs, first start up a new fenics project docker instance, with something like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>brew install fenicsproject
+fenicsproject create myspace
+fenicsproject start myspace
+</pre></div>
+</div>
+<p>Once inside, the docs are served by running <code class="docutils literal"><span class="pre">filewatcher.sh</span></code>, which will watch the project directory and re-build if there are any changes. The local port to watch will depend on which port the fenics container is exposed on.</p>
+</div>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ch2.html" class="btn btn-neutral float-right" title="Chapter 2: Fundamentals" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to 2016book’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -174,7 +198,6 @@
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
       <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script type="text/javascript" src="_static/searchtools.js"></script>
 
   
 
@@ -190,14 +213,7 @@
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>

@@ -76,6 +76,7 @@
             
             
                 <ul>
+<li class="toctree-l1"><a class="reference internal" href="ch1.html">Chapter 1: Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ch2.html">Chapter 2: Fundamentals</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ch3.html">Chapter 3: A Gallery of finite element solvers</a></li>
 </ul>
@@ -125,16 +126,14 @@
   <div class="section" id="welcome-to-2016book-s-documentation">
 <h1>Welcome to 2016book&#8217;s documentation!<a class="headerlink" href="#welcome-to-2016book-s-documentation" title="Permalink to this headline">¶</a></h1>
 <p>This is where I&#8217;ll keep notes as I try to work through the <a class="reference external" href="https://www.springer.com/gp/book/9783319524610">2016 version of the FEniCS tutorial</a>. The FEniCS project is a lovely open-source project which aims to provide powerful PDE solvers that don&#8217;t necessarily require impossible-to-read syntax in the source code!</p>
-<p>To build these docs, first start up a new fenics project docker instance, with something like:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>brew install fenicsproject
-fenicsproject create myspace
-fenicsproject start myspace
-</pre></div>
-</div>
-<p>Once inside, the docs are served by running <code class="docutils literal"><span class="pre">filewatcher.sh</span></code>, which will watch the project directory and re-build if there are any changes. The local port to watch will depend on which port the fenics container is exposed on.</p>
 <p>Contents:</p>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="ch1.html">Chapter 1: Intro</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ch1.html#running-fenics">Running FEniCS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch1.html#building-the-docs">Building the docs</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="ch2.html">Chapter 2: Fundamentals</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ch2.html#finite-element-variational-problems">2.1 - 2.3 Finite Element Variational Problems</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ch2.html#deflection-of-a-membrane">2.4 Deflection of a Membrane</a></li>
@@ -143,6 +142,7 @@ fenicsproject start myspace
 <li class="toctree-l1"><a class="reference internal" href="ch3.html">Chapter 3: A Gallery of finite element solvers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ch3.html#the-heat-equation">3.1 The Heat Equation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ch3.html#a-nonlinear-poisson-equation">3.2: A Nonlinear Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ch3.html#linear-elasticity">3.3: Linear Elasticity</a></li>
 </ul>
 </li>
 </ul>

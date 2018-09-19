@@ -77,6 +77,7 @@
             
             
                 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ch1.html">Chapter 1: Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ch2.html">Chapter 2: Fundamentals</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Chapter 3: A Gallery of finite element solvers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-heat-equation">3.1 The Heat Equation</a><ul>
@@ -85,6 +86,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#a-nonlinear-poisson-equation">3.2: A Nonlinear Poisson Equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linear-elasticity">3.3: Linear Elasticity</a></li>
 </ul>
 </li>
 </ul>
@@ -293,7 +295,9 @@ We refer to these two strategies as computing the initial condition by either &#
 </div>
 </dd></dl>
 
-<p>3.3: Linear Elasticity</p>
+</div>
+<div class="section" id="linear-elasticity">
+<h2>3.3: Linear Elasticity<a class="headerlink" href="#linear-elasticity" title="Permalink to this headline">¶</a></h2>
 <p>Analysis of structures is one of the major activities of modern engineering, which likely makes the PDE modeling the deformation of elastic bodies the most popular PDE in the world. It takes just one page of code to solve the equations of 2D or 3D elasticity using FEniCS, as we show here.</p>
 <p><strong>PDE Problem</strong></p>
 <p>The equations governing small elastic deformations of a body <span class="math">\(\Omega\)</span> can be written as</p>
@@ -301,6 +305,12 @@ We refer to these two strategies as computing the initial condition by either &#
 \[\begin{split}- \nabla \cdot \sigma &amp; = &amp; f \text{ in } \Omega \\
 \sigma &amp; = &amp; \lambda \text{tr}(\epsilon) I + 2 \mu \epsilon \\
 \epsilon &amp; = &amp; \frac{1}{2} \left( \nabla u + (\nabla u)^\top \right)\end{split}\]</div>
+<p>where <span class="math">\(\sigma\)</span> is the stress tensor, <span class="math">\(f\)</span> is the body force per unit volume, <span class="math">\(\lambda\)</span> and <span class="math">\(\mu\)</span> are Lamé&#8217;s elasticity parameters for the material in <span class="math">\(\Omega\)</span>, <span class="math">\(I\)</span> is the identity tensor, tr is the trace operator on a tensor, <span class="math">\(\epsilon\)</span> is the symmetric strain-rate tensor (symmetric gradient), and <span class="math">\(u\)</span> is the displacement vector field. We have here assumed isotropic conditions.</p>
+<p>We combine the above to obtain</p>
+<div class="math">
+\[\sigma = \lambda (\nabla \cdot u) I + \mu \left( \nabla u + (\nabla u)^\top \right)\]</div>
+<p>We can easily obtain a single vector PDE for <span class="math">\(u\)</span>, which is the governing PDE for the unknown (Navier&#8217;s equation). As it turns out, for the variational formulation it is convenient to keep the equations split as above</p>
+<p><strong>Variational Formulation</strong></p>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">ch3.linear_elasticity.</code><code class="descname">ClampedBeam</code></dt>
