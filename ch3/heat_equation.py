@@ -101,7 +101,7 @@ class ATestProblem(object):
 
     which yields a function whose computed values at the nodes will be exact, regardless of the size of the elements and :math:`\Delta t`, as long as the mesh is uniformly partitioned. By inserting ^ into the heat equation, we find that the RHS :math:`f` must be given by :math:`f(x, y, t) = \beta - 2 - 2 \alpha`. The boundary value is :math:`u_D(x, y, t) = 1 + x^2 + \alpha y^2 + \beta t` and the initial value is :math:`u_0(x, y) = 1 + x^2 + \alpha y^2`.
 
-    A new issue is how to deal with functions that vary in both space and time, such as our boundary condition here :math:`u_D(x, y, t) = 1 + x^2 + \alpha y^2 + \beta t`. A natural solutino is to use a FEniCS :code:`Expression` with time t as a parameter, in additional to the physical parameters:
+    A new issue is how to deal with functions that vary in both space and time, such as our boundary condition here :math:`u_D(x, y, t) = 1 + x^2 + \alpha y^2 + \beta t`. A natural solution is to use a FEniCS :code:`Expression` with time t as a parameter, in additional to the physical parameters:
 
     .. code-block:: python
 
